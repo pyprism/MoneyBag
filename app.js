@@ -20,7 +20,7 @@ router.route('/expense')
                 res.status(500).send(err);
            else
                res.json(name);
-       })
+       });
     });
 
 app.enable('trust proxy');
