@@ -3,7 +3,7 @@
  */
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema();
+    Schema = mongoose.Schema;
 
 var initialStatusSchema = new Schema({
     amount: {
@@ -49,7 +49,12 @@ var loanSchema = new Schema ({
 });
 
 
-module.exports = mongoose.model('Tag', tagSchema);
+/*module.exports = mongoose.model('Tag', tagSchema);
 module.exports = mongoose.model('Manager', managerSchema);
 module.exports = mongoose.model('Loan', loanSchema);
-module.exports = mongoose.model('InitialAmount', initialStatusSchema);
+module.exports = mongoose.model('InitialAmount', initialStatusSchema);*/
+
+exports.Tag = mongoose.model('Tag', tagSchema);
+exports.Manager = mongoose.model('Manager', managerSchema);
+exports.Loan = mongoose.model('Loan', loanSchema);
+exports.Initial = mongoose.model('InitialAmount', initialStatusSchema);
