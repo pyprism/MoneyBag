@@ -4,27 +4,23 @@
 
 var express = require('express'),
     mongoose = require('mongoose'),
-    manager = require('./models/manager');
+    manager = require('./models/manager'),
+    bodyParser = require('body-parser');
 
-var app = express(),
-    router = express.Router();
+incomeRoute = require('./routes/income')(manager);  // injecting manager model :D impressive isn't it ?
+
+
+var app = express();
+
+
+app.enable('trust proxy');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use('/api/income',incomeRoute);
 
 var port = process.env.PORT || 4000,
     db = mongoose.connect( process.env.DB || 'mongodb://localhost/hiren_expense');
 
-
-router.route('/expense')
-    .get(function(req, res){
-       manager.Tag.find(function(err, name) {
-           if(err)
-                res.status(500).send(err);
-           else
-               res.json(name);
-       });
-    });
-
-app.enable('trust proxy');
-app.use('/api',router);
 
 app.get('/', function(req, res){
     res.send('test');
