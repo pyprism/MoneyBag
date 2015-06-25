@@ -12,7 +12,7 @@ var initialStatusSchema = new Schema({
     }
 });
 
-var managerSchema = new Schema({
+var incomeSchema = new Schema({
     income: {
         type: Number,
         default: 0
@@ -25,13 +25,31 @@ var managerSchema = new Schema({
         type: Number,
         default: 0
     },
-    createdAt: {
+    createdOn: {
         type: Date,
         default: Date.now()
     },
     month: String,
     year: Number
 });
+
+var expenseSchema = new Schema({
+    source: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag'
+    }],
+    expense: {
+        type: Number,
+        default: 0
+    },
+    createdOn: {
+        type: Date,
+        default: Date.now()
+    },
+    month: String,
+    year: Number
+});
+
 
 var tagSchema = new Schema ({
     name: String
@@ -48,13 +66,8 @@ var loanSchema = new Schema ({
     }
 });
 
-
-/*module.exports = mongoose.model('Tag', tagSchema);
-module.exports = mongoose.model('Manager', managerSchema);
-module.exports = mongoose.model('Loan', loanSchema);
-module.exports = mongoose.model('InitialAmount', initialStatusSchema);*/
-
 exports.Tag = mongoose.model('Tag', tagSchema);
-exports.Manager = mongoose.model('Manager', managerSchema);
+exports.Income = mongoose.model('Income', incomeSchema);
+exports.Expense = mongoose.model('Expense', expenseSchema);
 exports.Loan = mongoose.model('Loan', loanSchema);
 exports.Initial = mongoose.model('InitialAmount', initialStatusSchema);
