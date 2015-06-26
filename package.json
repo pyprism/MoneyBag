@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/pyprism/Hiren-Tracker#readme",
   "dependencies": {
+    "body-parser": "^1.13.1",
     "express": "^4.13.0",
     "mongoose": "^4.0.6"
   }
