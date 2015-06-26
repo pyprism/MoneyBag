@@ -6,7 +6,7 @@ var express = require('express');
 var routes = function (manager) {
     var router = express.Router();
 
-    router.route('/expense')
+    router.route('/')
         .post(function(req, res) {
             var man = new manager.Income(req.body);
             //res.send(manager);
@@ -19,7 +19,7 @@ var routes = function (manager) {
             var query = {};
 
             if(req.query.month) {
-                query.month = req.query.month
+                query.month = req.query.month;
             }
             manager.Tag.find(query, function(err, name) {
                 if(err)
