@@ -14,14 +14,17 @@ var routes = function(manager){
                 res.json(data);
             });
         })
-        .post(function(req, res){
+        .post(function(req, res) {
 
             var hiren = new manager.Loan(req.body);
-            hiren.save(function(err) {
+            hiren.save(function (err) {
                 if (err)
-                  res.status(409).send(err);
-            res.status(201).send(hiren);
-        })
+                    res.status(409).send(err);
+                res.status(201).send(hiren);
+            });
+        });
+
+            return router;
 };
 
 module.export = routes;
