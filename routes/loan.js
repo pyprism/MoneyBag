@@ -27,4 +27,4 @@ var routes = function(manager){
             return router;
 };
 
-module.export = routes;
+module.exports = routes;
