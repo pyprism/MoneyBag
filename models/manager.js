@@ -60,6 +60,10 @@ var loanSchema = new Schema ({
     to: String,
     amount: Number,
     date: Date,
+    returnDate: {
+        type: Date,
+        default: null
+    },
     active: {
         type: Boolean,
         default: true
