@@ -24,6 +24,35 @@ var routes = function(manager){
             });
         });
 
+    router.route('/:loanId')
+        .get(function(req, res) {
+
+            manager.Loan.findById(req.params.loanId, function(err, data) {
+                if(err)
+                    res.status(500).send(err);
+                else
+                    res.json(data);
+            });
+        })
+        .put(function(req, res) {
+
+            manager.Loan.findById(req.params.loanId, function(err, data) {
+                if(err)
+                    res.status(500).send(err);
+                else{
+                    data.from = req.body.from;
+                    data.to = req.body.to;
+                    data.amount = req.body.amount;
+                    data.date = req.body.date;
+                    data.returnDate = req.body.returnDate;
+                    data.active = req.body.active;
+                    data.save();
+                    res.json(data);
+                }
+
+            });
+        });
+
             return router;
 };
 
