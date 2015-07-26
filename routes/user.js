@@ -5,17 +5,17 @@ var express = require('express');
 
 
 
-var routes = function(User, createJWT) {
+var routes = function(userObj, createJWT) {
     var router = express.Router();
 
     router.route('/signup')
         .post(function( req, res) {
-            User.findOne({email: req.body.email }, function(err, existingUser) {
+            userObj.User.findOne({email: req.body.email }, function(err, existingUser) {
                 if (existingUser) {
                     return res.status(409).json({ "message": "Email is already taken"});
                 }
 
-                var user = new User({
+                var user = new userObj.User({
                     email: req.body.email,
                     password: req.body.password
                 });
@@ -27,18 +27,19 @@ var routes = function(User, createJWT) {
 
     router.route('/login')
         .post(function(req, res) {
-            User.findOne({ email: req.body.email }), '+password', function(err, user) {
+            userObj.User.findOne({ email: req.body.email }, '+password', function(err, user) {
                 if (!user) {
                     return res.status(401).json({ 'message': 'Wrong email and/or password'})
                 }
-            }
 
-            User.comparePassword(req.body.password, function(err, isMatch) {
-                if(!isMatch) {
-                    return res.status(401).json({ 'message': 'Wrong email or/and password'})
-                }
-                res.json({ 'token': createJWT(user)});
+                user.comparePassword(req.body.password, function(err, isMatch) {
+                    if(!isMatch) {
+                        return res.status(401).json({ 'message': 'Wrong email or/and password'});
+                    }
+                    res.json({ 'token': createJWT(user)});
+                });
             });
+
         });
 
     return router;
