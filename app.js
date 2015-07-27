@@ -72,8 +72,8 @@ var port = process.env.PORT || 4000,
     TOKEN_SECRET = process.env.TOKEN_SECRET || "some secret strings ? ;) , what about Hiren ? :P hehe ";
 
 
-app.get('/', function(req, res){
-    res.send('test');
+app.get('*', function(req, res) {
+    res.sendfile('./public/hiren.html'); // load the single view file
 });
 
 app.listen(port, function(){
