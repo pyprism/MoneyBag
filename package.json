@@ -20,6 +20,7 @@
     "bcryptjs": "^2.2.0",
     "body-parser": "^1.13.1",
     "express": "^4.13.0",
+    "express-validator": "^2.14.0",
     "helmet": "^0.10.0",
     "jwt-simple": "^0.3.0",
     "moment": "^2.10.3",
