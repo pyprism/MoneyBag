@@ -14,5 +14,14 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "angular-cookies": "~1.4.7",
+    "bootstrap": "~3.3.5",
+    "ng-dialog": "~0.5.5",
+    "bootstrap-material-design": "~0.3.0",
+    "underscore": "~1.8.3"
+  }
 }
