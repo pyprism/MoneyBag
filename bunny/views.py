@@ -4,6 +4,11 @@ from rest_framework.response import Response
 from .models import Account
 from .permissions import IsAccountOwner
 from .serializers import AccountSerializer
+from django.shortcuts import render
+
+
+def index(request):
+    return render(request, 'index.html')
 
 
 class AccountViewSet(viewsets.ModelViewSet):
