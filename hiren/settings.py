@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bunny',
     'rest_framework',
+    'rest_framework_swagger',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,7 +65,7 @@ ROOT_URLCONF = 'hiren.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['public'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,6 +89,7 @@ if 'TRAVIS' in os.environ:
         'default': {
             'ENGINE':   'django.db.backends.postgresql_psycopg2',
             'NAME':     'travisci',
+            'ATOMIC_REQUESTS': True,
             'USER':     'postgres',
             'PASSWORD': '',
             'HOST':     'localhost',
@@ -101,6 +103,7 @@ else:
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'USER': 'hiren',
             'PASSWORD': 'hiren',
+            'ATOMIC_REQUESTS': True,
             'HOST': 'localhost',
             'PORT': '',
             'CONN_MAX_AGE': 600,
