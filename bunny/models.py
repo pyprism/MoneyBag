@@ -32,3 +32,14 @@ class Account(AbstractBaseUser):
 
     objects = AccountManager()
 
+
+class Budget(models.Model):
+    month = models.DateField()
+    target = models.DecimalField(max_digits=10, decimal_places=5)
+    current = models.DecimalField(max_digits=10, decimal_places=5)
+
+
+class Balance(models.Model):
+    month = models.DateTimeField(auto_now_add=True)
+    income = models.DecimalField(max_digits=10, decimal_places=5)
+    expense = models.DecimalField(max_digits=10, decimal_places=5)
