@@ -12,14 +12,14 @@ module.exports = {
                 exclude: /(node_modules)/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['react', 'es2015'],
-                    plugins: ['transform-class-properties', "react-html-attrs"]
+                    presets: ['react', 'es2015', 'stage-0'],
+                    plugins: ['transform-class-properties', "react-html-attrs", "transform-decorators-legacy"]
                 }
             }
         ]
     },
     output: {
-        path: __dirname + "/public/",
+        path: __dirname + "/static/",
         filename: "client.min.js"
     },
     plugins: debug ? [] : [
