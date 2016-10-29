@@ -1,6 +1,7 @@
 coreapi==2.0.8
 Django==1.10.2
 django-rest-swagger==2.0.7
+django-taggit==0.21.3
 djangorestframework==3.5.1
 itypes==1.1.0
 openapi-codec==1.1.7
@@ -9,4 +10,3 @@ PyYAML==3.11
 requests==2.11.1
 simplejson==3.10.0
 uritemplate==3.0.0
-wheel==0.29.0
