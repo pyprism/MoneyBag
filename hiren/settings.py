@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', JSON_DATA['secret_key'])
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -47,9 +47,10 @@ INSTALLED_APPS = (
     'bunny',
     'rest_framework',
     'rest_framework_swagger',
+    "taggit",
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -99,10 +100,10 @@ if 'TRAVIS' in os.environ:
 else:
     DATABASES = {
         'default': {
-            'NAME': 'hiren_bunny',
+            'NAME': JSON_DATA['db_name'],
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'USER': 'hiren',
-            'PASSWORD': 'hiren',
+            'USER': JSON_DATA['db_user'],
+            'PASSWORD': JSON_DATA['db_password'],
             'ATOMIC_REQUESTS': True,
             'HOST': 'localhost',
             'PORT': '',
