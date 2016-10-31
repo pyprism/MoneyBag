@@ -64,7 +64,7 @@ class Initial(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
     )
-    amount = models.DecimalField(max_digits=10, decimal_places=5)
+    amount = models.CharField(max_length=500)
     source = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -76,7 +76,7 @@ class Income(models.Model):
         on_delete=models.PROTECT,
     )
     month = models.DateField()
-    income = models.DecimalField(max_digits=10, decimal_places=5)
+    income = models.CharField(max_length=500)
     income_source = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -88,7 +88,7 @@ class Expense(models.Model):
         on_delete=models.PROTECT,
     )
     month = models.DateField()
-    expense = models.DecimalField(max_digits=10, decimal_places=5)
+    expense = models.CharField(max_length=500)
     expense_source = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -100,9 +100,9 @@ class MonthlyStatus(models.Model):
         on_delete=models.PROTECT,
     )
     month = models.DateField()
-    income = models.DecimalField(max_digits=10, decimal_places=5)
-    expense = models.DecimalField(max_digits=10, decimal_places=5)
-    saved = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    income = models.CharField(max_length=500)
+    expense = models.CharField(max_length=500)
+    saved = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -113,8 +113,8 @@ class YearlyStatus(models.Model):
         on_delete=models.PROTECT,
     )
     year = models.DateField()
-    income = models.DecimalField(max_digits=10, decimal_places=5)
-    expense = models.DecimalField(max_digits=10, decimal_places=5)
-    saved = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    income = models.CharField(max_length=500)
+    expense = models.CharField(max_length=500)
+    saved = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
