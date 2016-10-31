@@ -108,7 +108,7 @@ class MonthlyStatus(models.Model):
 
 
 class YearlyStatus(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
     )
@@ -116,5 +116,18 @@ class YearlyStatus(models.Model):
     income = models.CharField(max_length=500)
     expense = models.CharField(max_length=500)
     saved = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Lend(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
+    name = models.CharField(max_length=500)
+    amount = models.CharField(max_length=500)
+    lending_date = models.DateField()
+    return_date = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
