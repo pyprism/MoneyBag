@@ -1,6 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
+from taggit.managers import TaggableManager
 # Create your models here.
 
 
@@ -57,13 +59,62 @@ class Account(AbstractBaseUser):
         return self.is_admin
 
 
-class Budget(models.Model):
+class Initial(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=5)
+    source = TaggableManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Income(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
     month = models.DateField()
-    target = models.DecimalField(max_digits=10, decimal_places=5)
-    current = models.DecimalField(max_digits=10, decimal_places=5)
+    income = models.DecimalField(max_digits=10, decimal_places=5)
+    income_source = TaggableManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
-class Balance(models.Model):
-    month = models.DateTimeField(auto_now_add=True)
+class Expense(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
+    month = models.DateField()
+    expense = models.DecimalField(max_digits=10, decimal_places=5)
+    expense_source = TaggableManager()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class MonthlyStatus(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
+    month = models.DateField()
     income = models.DecimalField(max_digits=10, decimal_places=5)
     expense = models.DecimalField(max_digits=10, decimal_places=5)
+    saved = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class YearlyStatus(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+    )
+    year = models.DateField()
+    income = models.DecimalField(max_digits=10, decimal_places=5)
+    expense = models.DecimalField(max_digits=10, decimal_places=5)
+    saved = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
