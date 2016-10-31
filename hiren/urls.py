@@ -23,6 +23,6 @@ router.register(r'accounts', AccountViewSet)
 
 urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
-    url(r'^docs/', include('rest_framework_swagger.urls')),
+    # url(r'^docs/', include('rest_framework_swagger.urls')),
     url('^.*$', views.index, name='index'),
 ]
