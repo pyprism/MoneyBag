@@ -60,7 +60,7 @@ class TransactionDetails(models.Model):
     )
     transaction = models.ForeignKey('Transaction', on_delete=models.CASCADE)
     account_head = models.ForeignKey('AccountHead', on_delete=models.CASCADE)
-    position = models.CharField(choices=TRANS_POSITION, max_length=5)
+    position = models.CharField(choices=TRANS_POSITION, max_length=2)
     amount = models.DecimalField(max_digits=18, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
