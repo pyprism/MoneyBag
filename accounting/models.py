@@ -50,7 +50,6 @@ class Transaction(models.Model):
     voucher_status = models.SmallIntegerField(choices=STATUS_TYPES)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class TransactionDetails(models.Model):
@@ -63,7 +62,6 @@ class TransactionDetails(models.Model):
     position = models.CharField(choices=TRANS_POSITION, max_length=2)
     amount = models.DecimalField(max_digits=18, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'accounting_transaction_details'
