@@ -280,5 +280,5 @@ CACHEOPS = {
     # This includes request.user or post.author access,
     # where Post.author is a foreign key to auth.User
     'auth.user': {'ops': 'all', 'timeout': 60*60*24*30},
-    '*.*': {'ops': 'all', 'timeout': 60*60*24*5},  # enable cache for all model for 5 days
+    '*.*': {'ops': 'all', 'timeout': 60*60*24*2},  # enable cache for all model for 2 days
 }
