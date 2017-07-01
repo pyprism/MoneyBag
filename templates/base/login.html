@@ -2,9 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hiren-Reminder: Login</title>
+    {% load staticfiles %}
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}" />
+    {% endcompress %}
 </head>
 <body>
-
+<hgroup>
+    <h1>Money Bag</h1>
+</hgroup>
+<form action="{% url 'login' %}" method="post"> {% csrf_token %}
+    {% if messages %}
+        <div class="alert alert-info" role="alert">
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <div class="group">
+        <input type="text" name="username" required><span class="highlight"></span><span class="bar"></span>
+        <label>Username</label>
+    </div>
+    <div class="group">
+        <input type="password" name="password"  required><span class="highlight"></span><span class="bar"></span>
+        <label>Password</label>
+    </div>
+    <button type="submit" class="button buttonBlue">Login
+        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+    </button>
+    {% compress js %}
+        <script src="{% static '/js/jquery-3.2.1.min.js' %}"></script>
+        <script src="{% static '/js/login.js' %}"></script>
+    {% endcompress %}
+</form>
 </body>
 </html>
