@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounting',
     'compressor',
+    'base',
+    'debug_toolbar',
 ]
 
 if DEBUG is False:
@@ -55,11 +57,6 @@ if DEBUG is False:
         'cacheops',
     ]
 
-if DEBUG:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-        'silk',
-    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,7 +66,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'silk.middleware.SilkyMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
