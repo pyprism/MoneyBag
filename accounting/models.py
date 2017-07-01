@@ -11,7 +11,7 @@ class AccountHead(models.Model):
         ("inc", 'income'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_id = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.CASCADE)
+    parent_id = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=400, blank=True)
     type = models.CharField(choices=HEAD_TYPES, max_length=5, blank=True)
     head_code = models.IntegerField(null=True, blank=True)
@@ -44,7 +44,7 @@ class Transaction(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     transaction_date = models.DateTimeField(null=True, blank=True)
-    transaction_ref = models.ForeignKey('Transaction', null=True, blank=True, on_delete=models.CASCADE)
+    transaction_ref = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     voucher_type = models.SmallIntegerField(choices=VOUCHER_TYPES)
     voucher_number = models.CharField(max_length=255, blank=True)
     voucher_status = models.SmallIntegerField(choices=STATUS_TYPES)
