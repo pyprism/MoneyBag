@@ -5,7 +5,7 @@ from .models import Transaction, AccountHead, TransactionDetails
 class TransactionForm(ModelForm):
     class Meta:
         model = Transaction
-        fields = '__all__'
+        exclude = ('voucher_status', )
 
 
 class AccountHeadForm(ModelForm):
