@@ -33,7 +33,7 @@ class Transaction(models.Model):
 
     VOUCHER_TYPES = (
         (1, 'Purchase'),
-        (5, 'Expense'),
+        (2, 'Expense'),
         (3, 'Journal'),
         (4, 'Contra'),
         (5, 'Payment'),
