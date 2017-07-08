@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>MoneyBag | {% block title %} {% endblock %}</title>
+    {% load staticfiles %}
+
+    <!-- Favicon-->
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    {% load compress %}
+    {% compress css %}
+        <!-- Bootstrap Core Css -->
+        <link href="{% static 'libs/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+        <!-- Waves Effect Css -->
+        <link href="{% static 'libs/node-waves/waves.css' %}" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="{% static 'libs/animate-css/animate.css' %}" rel="stylesheet" />
+
+        <!-- Custom Css -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% endcompress %}
+
+</head>
+
+<body class="bg-light-blue">
+<!-- child page -->
+{% block childPage %}
+
+{% endblock %}
+<!-- end child page -->
+
+{% compress js %}
+    <!-- Jquery Core Js -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'libs/bootstrap/js/bootstrap.js' %}"></script>
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'libs/node-waves/waves.js' %}"></script>
+    <!-- Validation Plugin Js -->
+    <script src="{% static 'libs/jquery-validation/jquery.validate.js' %}"></script>
+    <!-- Custom Js -->
+    <script src="{% static 'js/generic.js' %}"></script>
+    <script src="{% static 'js/gate.js' %}"></script>
+
+    <!-- child page js -->
+    {% block child_page_js %}
+
+    {% endblock %}
+
+{% endcompress %}
+
+</body>
+
+</html>
