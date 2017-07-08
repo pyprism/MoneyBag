@@ -10,8 +10,8 @@ class AccountHead(models.Model):
         ("exp", 'expense'),
         ("inc", 'income'),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_id = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    parent = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=400, blank=True)
     type = models.CharField(choices=HEAD_TYPES, max_length=5, blank=True)
     head_code = models.IntegerField(null=True, blank=True)
@@ -42,9 +42,9 @@ class Transaction(models.Model):
         (8, 'Credit note'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     transaction_date = models.DateTimeField(null=True, blank=True)
-    transaction_ref = models.ForeignKey('Transaction', null=True, blank=True, on_delete=models.CASCADE)
+    transaction_ref = models.ForeignKey('Transaction', null=True, blank=True, on_delete=models.PROTECT)
     voucher_type = models.SmallIntegerField(choices=VOUCHER_TYPES)
     voucher_number = models.CharField(max_length=255, blank=True)
     voucher_status = models.SmallIntegerField(choices=STATUS_TYPES)
@@ -58,8 +58,8 @@ class TransactionDetails(models.Model):
         ("dr", 'debit'),
         ("cr", 'credit'),
     )
-    transaction = models.ForeignKey('Transaction', on_delete=models.CASCADE)
-    account_head = models.ForeignKey('AccountHead', on_delete=models.CASCADE)
+    transaction = models.ForeignKey('Transaction', on_delete=models.PROTECT)
+    account_head = models.ForeignKey('AccountHead', on_delete=models.PROTECT)
     position = models.CharField(choices=TRANS_POSITION, max_length=5)
     amount = models.DecimalField(max_digits=18, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
