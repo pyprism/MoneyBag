@@ -10,6 +10,7 @@ class AccountHead(models.Model):
         ("exp", 'expense'),
         ("inc", 'income'),
     )
+
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
     parent = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=400, blank=True)
@@ -33,7 +34,7 @@ class Transaction(models.Model):
 
     VOUCHER_TYPES = (
         (1, 'Purchase'),
-        (5, 'Expense'),
+        (2, 'Expense'),
         (3, 'Journal'),
         (4, 'Contra'),
         (5, 'Payment'),
@@ -50,7 +51,6 @@ class Transaction(models.Model):
     voucher_status = models.SmallIntegerField(choices=STATUS_TYPES)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class TransactionDetails(models.Model):
@@ -58,12 +58,12 @@ class TransactionDetails(models.Model):
         ("dr", 'debit'),
         ("cr", 'credit'),
     )
+
     transaction = models.ForeignKey('Transaction', on_delete=models.PROTECT)
     account_head = models.ForeignKey('AccountHead', on_delete=models.PROTECT)
     position = models.CharField(choices=TRANS_POSITION, max_length=5)
     amount = models.DecimalField(max_digits=18, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'accounting_transaction_details'

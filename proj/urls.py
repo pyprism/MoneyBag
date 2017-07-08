@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.conf import settings
+from accounting import urls as account
+from base import urls as api
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
+    url(r'^', include(api)),
+    url(r'^account/', include(account)),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
-        url(r'^silk/', include('silk.urls', namespace='silk'))
     ]
