@@ -10,7 +10,7 @@ class AccountHead(models.Model):
         ("exp", 'expense'),
         ("inc", 'income'),
     )
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     parent = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=400, blank=True)
     type = models.CharField(choices=HEAD_TYPES, max_length=5, blank=True)
