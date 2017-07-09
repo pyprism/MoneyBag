@@ -22,11 +22,11 @@ class LoginViewTest(TestCase):
 
     def test_auth(self):
         respond = self.c.post('/', {'username': 'hiren', 'password': 'password'})
-        self.assertRedirects(respond, '/accounting/')
+        self.assertRedirects(respond, '/accounting/dashboard/')
 
     def test_redirect_for_unauthenticated_user_works(self):
-        response = self.c.get('/accounting/')
-        self.assertRedirects(response, '/?next=/accounting/')
+        response = self.c.get('/accounting/dashboard/')
+        self.assertRedirects(response, '/?next=/accounting/dashboard/')
 
     def test_redirect_works_for_bad_auth(self):
         respond = self.c.post('/', {'username': 'hiren', 'password': 'bad pass'})
@@ -34,9 +34,9 @@ class LoginViewTest(TestCase):
 
     def test_view_returns_correct_template(self):
         response = self.c.get('/')
-        self.assertTemplateUsed(response, 'login.html')
+        self.assertTemplateUsed(response, 'base/login.html')
 
     def test_authenticated_user_redirect_to_the_app(self):
         self.c.login(username='hiren', password='password')
         response = self.c.get('/', follow=True)
-        self.assertRedirects(response, '/accounting/')
+        self.assertRedirects(response, '/accounting/dashboard/')
