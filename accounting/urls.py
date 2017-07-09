@@ -1,5 +1,6 @@
 from django.conf.urls import url
+from accounting import views
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
+    url(r'^dashboard/', views.dashboard, name='dashboard'),
 ]
