@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib import auth
+from django.contrib.auth.models import User
 
 
 def login(request):
@@ -22,4 +23,30 @@ def login(request):
             messages.error(request, 'Username/Password is not valid!')
             return redirect('/')
     else:
-        return render(request, 'base/login.html', {'title': 'Login'})
+        return render(request, 'base/login.html')
+
+
+def register(request):
+    """
+    Handles registration
+    :param request:
+    :return:
+    """
+    if request.user.is_authenticated:
+        return redirect('accounting')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        email = request.POST.get('email')
+        if password == confirm_password:
+            user = User.objects.create_user(username=username,
+                                            email=email,
+                                            password=password)
+            if user:
+                return render(request, 'base/thanks.html')
+        else:
+            messages.error(request, 'Form is not valid!')
+            return redirect('register')
+    else:
+        return render(request, 'base/sign_up.html')
