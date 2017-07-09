@@ -1,0 +1,29 @@
+language: python
+python:
+  - "3.6"
+
+cache: pip
+
+services:
+  - redis-server
+
+addons:
+  postgresql: "9.4"
+
+env:
+  - DEBUG=True
+
+install:
+  - pip install -r requirements.txt --quiet
+  - pip install coveralls
+
+before_script:
+  - psql -c "CREATE DATABASE travisci;" -U postgres
+
+script:
+  - python manage.py migrate
+  - python manage.py test
+  - coverage run --source=bookmark manage.py test bookmark
+
+after_success:
+- coveralls
