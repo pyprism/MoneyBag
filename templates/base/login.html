@@ -4,53 +4,59 @@
 
 {% block childPage %}
     <div class="login-page">
-    <div class="login-box">
-        <div class="logo">
-            <a href="javascript:void(0);">Money<b>Bag</b></a>
-            <small>Manage honey in your pocket</small>
-        </div>
-        <div class="card">
-            <div class="body">
-                <form id="sign_in" method="POST">
-                    <div class="msg">Sign in to start your session</div>
-                    <div class="input-group">
+        <div class="login-box">
+            <div class="logo">
+                <a href="javascript:void(0);">Money<b>Bag</b></a>
+                <small>Manage honey in your pocket</small>
+            </div>
+            <div class="card">
+                <div class="body">
+                    <form id="sign_in" {% url 'login' %} method="POST"> {% csrf_token %}
+                        {% if messages %}
+                            <div class="alert alert-info" role="alert">
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        <div class="msg">Sign in to start your session</div>
+                        <div class="input-group">
                         <span class="input-group-addon">
-                            <i class="material-icons">email</i>
+                            <i class="material-icons">person</i>
                         </span>
-                        <div class="form-line">
-                            <input type="email" class="form-control" name="email" placeholder="email address" required autofocus>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="username" placeholder="username" required autofocus>
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group">
+                        <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">lock</i>
                         </span>
-                        <div class="form-line">
-                            <input type="password" class="form-control" name="password" placeholder="Password" required>
+                            <div class="form-line">
+                                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-8 p-t-5">
-                            <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-pink">
-                            <label for="rememberme">Remember Me</label>
+                        <div class="row">
+                            {#                        <div class="col-xs-8 p-t-5">#}
+                            {#                            <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-pink">#}
+                            {#                            <label for="rememberme">Remember Me</label>#}
+                            {#                        </div>#}
+                            <div class="col-xs-4">
+                                <button class="btn btn-block bg-light-blue waves-effect" type="submit">SIGN IN</button>
+                            </div>
                         </div>
-                        <div class="col-xs-4">
-                            <button class="btn btn-block bg-light-blue waves-effect" type="submit">SIGN IN</button>
+                        <div class="row m-t-15 m-b--20">
+                            <div class="col-xs-6">
+                                <a href="{% url 'register' %}">Register Now!</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row m-t-15 m-b--20">
-                        <div class="col-xs-6">
-                            <a href="sign-up.html">Register Now!</a>
-                        </div>
-                        <div class="col-xs-6 align-right">
-                            <a href="forgot-password.html">Forgot Password?</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block child_page_js %}
