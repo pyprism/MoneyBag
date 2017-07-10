@@ -33,16 +33,20 @@ def register(request):
     :return:
     """
     if request.user.is_authenticated:
-        return redirect('accounting')
+        return redirect('dashboard')
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         email = request.POST.get('email')
         if password == confirm_password:
-            user = User.objects.create_user(username=username,
-                                            email=email,
-                                            password=password)
+            try:
+                user = User.objects.create_user(username=username,
+                                                email=email,
+                                                password=password)
+            except:
+                messages.error(request, "Account already exists!")
+                return redirect('register')
             if user:
                 return render(request, 'base/thanks.html')
         else:
