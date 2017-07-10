@@ -40,3 +40,14 @@ class LoginViewTest(TestCase):
         self.c.login(username='hiren', password='password')
         response = self.c.get('/', follow=True)
         self.assertRedirects(response, '/accounting/dashboard/')
+
+
+class RegisterViewTest(TestCase):
+
+    def setUp(self):
+        User.objects.create_user('hiren', 'a@b.com', 'password')
+        self.c = Client()
+
+    def test_login_url_resolves_to_login_view(self):
+        found = resolve('/register/')
+        self.assertEqual(found.func, views.register)
