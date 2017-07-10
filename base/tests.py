@@ -51,3 +51,7 @@ class RegisterViewTest(TestCase):
     def test_login_url_resolves_to_login_view(self):
         found = resolve('/register/')
         self.assertEqual(found.func, views.register)
+
+    def test_view_returns_correct_template(self):
+        response = self.c.get('/register/')
+        self.assertTemplateUsed(response, 'base/signup.html')
