@@ -62,7 +62,8 @@ class RegisterViewTest(TestCase):
         self.assertRedirects(response, '/accounting/dashboard/')
 
     def test_registration(self):
-        bunny = self.c.post('/register/', {'username': 'bunny', 'password': 'pass',
-                                           'email': 'meow@meow.com', 'confirm_password': 'pass'})
+        self.c.post('/register/', {'username': 'bunny', 'password': 'pass',
+                                   'email': 'meow@meow.com', 'confirm_password': 'pass'})
         self.assertEqual(User.objects.count(), 2)
+
 
