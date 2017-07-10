@@ -54,4 +54,15 @@ class RegisterViewTest(TestCase):
 
     def test_view_returns_correct_template(self):
         response = self.c.get('/register/')
-        self.assertTemplateUsed(response, 'base/signup.html')
+        self.assertTemplateUsed(response, 'base/sign_up.html')
+
+    def test_redirect_for_authenticated_user_works(self):
+        self.c.login(username='hiren', password='password')
+        response = self.c.get('/register/')
+        self.assertRedirects(response, '/accounting/dashboard/')
+
+    def test_registration(self):
+        bunny = self.c.post('/register/', {'username': 'bunny', 'password': 'pass',
+                                           'email': 'meow@meow.com', 'confirm_password': 'pass'})
+        self.assertEqual(User.objects.count(), 2)
+
