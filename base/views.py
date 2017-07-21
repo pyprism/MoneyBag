@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib import auth
 from django.contrib.auth.models import User
-
+from accounting.helpers import AccHelper
+from django.db import IntegrityError,transaction
 
 def login(request):
     """
@@ -26,6 +27,7 @@ def login(request):
         return render(request, 'base/login.html')
 
 
+@transaction.atomic
 def register(request):
     """
     Handles registration
@@ -40,17 +42,24 @@ def register(request):
         confirm_password = request.POST.get('confirm_password')
         email = request.POST.get('email')
         if password == confirm_password:
-            try:
-                user = User.objects.create_user(username=username,
-                                                email=email,
-                                                password=password)
-            except:
+            user_exists = User.objects.filter(email=email)
+            if user_exists:
                 messages.error(request, "Account already exists!")
                 return redirect('register')
-            if user:
-                return render(request, 'base/thanks.html')
+            else:
+                with transaction.atomic():
+                    try:
+                        user = User.objects.create_user(username=username,
+                                                        email=email,
+                                                        password=password)
+                        AccHelper.create_all_basic_acc_heads(user)
+                        return render(request, 'base/thanks.html')
+                    except IntegrityError:
+                        messages.error(request, "Internal error! Contact with support.")
+                        return redirect('register')
+
         else:
-            messages.error(request, 'Form is not valid!')
+            messages.error(request, 'Password did not match!')
             return redirect('register')
     else:
         return render(request, 'base/sign_up.html')

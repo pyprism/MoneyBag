@@ -13,7 +13,7 @@
                 <div class="body">
                     <form id="sign_up" {% url 'register' %}  method="POST">  {% csrf_token %}
                         {% if messages %}
-                            <div class="alert alert-info" role="alert">
+                            <div class="alert alert-danger" role="alert">
                                 <ul class="messages">
                                     {% for message in messages %}
                                         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
@@ -59,7 +59,7 @@
                         {#                            <label for="terms">I read and agree to the <a href="javascript:void(0);">terms of usage</a>.</label>#}
                         {#                        </div>#}
 
-                        <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">SIGN UP</button>
+                        <button class="btn btn-block btn-lg bg-light-blue waves-effect" type="submit">SIGN UP</button>
 
                         <div class="m-t-25 m-b--5 align-center">
                             <a href="{% url 'login' %}">You already have a membership?</a>

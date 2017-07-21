@@ -13,7 +13,7 @@
                 <div class="body">
                     <form id="sign_in" {% url 'login' %} method="POST"> {% csrf_token %}
                         {% if messages %}
-                            <div class="alert alert-info" role="alert">
+                            <div class="alert alert-danger" role="alert">
                                 <ul class="messages">
                                     {% for message in messages %}
                                         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
@@ -35,7 +35,7 @@
                             <i class="material-icons">lock</i>
                         </span>
                             <div class="form-line">
-                                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                                <input type="password" class="form-control" minlength="6" name="password" placeholder="Password" required>
                             </div>
                         </div>
                         <div class="row">

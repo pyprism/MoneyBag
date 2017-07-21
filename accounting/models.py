@@ -12,10 +12,10 @@ class AccountHead(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    parent = models.ForeignKey('AccountHead', null=True, blank=True, on_delete=models.PROTECT)
+    parent_head_code = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=400, blank=True)
     type = models.CharField(choices=HEAD_TYPES, max_length=5, blank=True)
-    head_code = models.IntegerField(null=True, blank=True)
+    head_code = models.IntegerField()
     ledger_head_code = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
