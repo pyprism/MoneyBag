@@ -1,0 +1,144 @@
+{% extends "base/backend_master.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block childPage %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+                <h2>DASHBOARD</h2>
+            </div>
+
+            <!-- Widgets -->
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box bg-green hover-expand-effect">
+                        <div class="icon">
+                            <i class="material-icons">&#2547;</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">Income</div>
+                            <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box bg-red hover-expand-effect">
+                        <div class="icon">
+                            <i class="material-icons">&#2547;</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">Expense</div>
+                            <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box bg-pink hover-expand-effect">
+                        <div class="icon">
+                            <i class="material-icons">&#2547;</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">Loan</div>
+                            <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box bg-cyan hover-expand-effect">
+                        <div class="icon">
+                            <i class="material-icons">&#2547;</i>
+                        </div>
+                        <div class="content">
+                            <div class="text">Balance</div>
+                            <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Widgets -->
+            <div class="row clearfix">
+                <!-- Visitors -->
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        <div class="body bg-light-blue">
+                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
+                                 data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
+                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
+                                 data-fill-Color="rgba(0, 188, 212, 0)">
+                                145582,126582,26582,3872,1200
+                            </div>
+                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
+                                 data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
+                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
+                                 data-fill-Color="rgba(0, 188, 212, 0)">
+                                147441,152455,55575,2465,0.00
+                            </div>
+                            <ul class="dashboard-stat-list">
+                                <li>
+                                    TODAY&nbsp;
+&nbsp;                                    <span class="pull-right"><span>1,200</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">0.00</span> <span class="font-15">&#2547;</span></span>
+                                </li>
+                                <li>
+                                    YESTERDAY
+                                    <span class="pull-right"><span>3,872</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">2,465</span> <span class="font-15">&#2547;</span></span>
+                                </li>
+                                <li>
+                                    LAST WEEK
+                                    <span class="pull-right"><span>26,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">55,575</span> <span class="font-15">&#2547;</span></span>
+                                </li>
+                                <li>
+                                    THIS MONTH
+                                    <span class="pull-right"><span>1,26,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">1,52,455</span> <span class="font-15">&#2547;</span></span>
+                                </li>
+                                <li>
+                                    LAST MONTH
+                                    <span class="pull-right"><span>1,45,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">1,47,441</span> <span class="font-15">&#2547;</span></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Visitors -->
+                    <!-- section Usage -->
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="card">
+                        <div class="header">
+                            <h2>MOST EXPENSE SECTOR</h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">more_vert</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="javascript:void(0);">Details</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            <div id="donut_chart" class="dashboard-donut-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# Sector Usage -->
+
+
+            </div>
+
+
+        </div>
+    </section>
+
+{% endblock %}
+{% load staticfiles %}
+{% block child_page_js %}
+      <script src="{% static 'js/index.js' %}"></script>
+    <!-- Demo Js -->
+    <script src="{% static 'js/demo.js' %}"></script>
+    <script>
+        $( document ).ready(function() {
+
+        });
+    </script>
+{% endblock %}

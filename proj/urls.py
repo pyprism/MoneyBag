@@ -19,7 +19,6 @@ from accounting import urls as account
 from base import urls as api
 
 urlpatterns = [
-    url(r'^accounting/', include(account)),
     url(r'^', include(api)),
 ]
 

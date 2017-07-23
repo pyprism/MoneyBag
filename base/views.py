@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from accounting.helpers import AccHelper
 from django.db import IntegrityError,transaction
+from django.contrib.auth.decorators import login_required
 
 def login(request):
     """
@@ -63,3 +64,13 @@ def register(request):
             return redirect('register')
     else:
         return render(request, 'base/sign_up.html')
+
+@login_required
+def dashboard(request):
+    return render(request, 'base/dashboard.html')
+
+@login_required
+def logout(request):
+    messages.add_message(request, messages.SUCCESS, 'Your are successfully logged out.')
+    auth.logout(request)
+    return redirect('login')

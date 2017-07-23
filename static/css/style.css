@@ -8039,4 +8039,14 @@ html.ie11 .dropdown-menu ul.menu li a {
 
 html.ie11 .bs-searchbox .form-control {
   width: 90%; }
+.red {
+    color: #F44336; }
+.text-black {
+    color: #000000; }
 
+@media (max-width: 767px) {
+
+  .navbar .dropdown-menu {
+    margin-left: 0;
+  }
+}
