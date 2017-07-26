@@ -19,6 +19,8 @@
     {% compress css %}
         <!-- Bootstrap Core Css -->
         <link href="{% static 'libs/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+            <!-- Bootstrap Select Css -->
+    <link href="{% static 'libs/bootstrap-select/css/bootstrap-select.min.css' %}" rel="stylesheet" />
 
         <!-- Waves Effect Css -->
         <link href="{% static 'libs/node-waves/waves.css' %}" rel="stylesheet" />
@@ -271,13 +273,17 @@
     <script src="{% static 'libs/flot-charts/jquery.flot.pie.js' %}"></script>
     <script src="{% static 'libs/flot-charts/jquery.flot.categories.js' %}"></script>
     <script src="{% static 'libs/flot-charts/jquery.flot.time.js' %}"></script>
+      <!-- Validation Plugin Js -->
+    <script src="{% static 'libs/jquery-validation/jquery.validate.js' %}"></script>
 
     <!-- Sparkline Chart Plugin Js -->
     <script src="{% static 'libs/jquery-sparkline/jquery.sparkline.js' %}"></script>
+       <!-- Select Plugin Js -->
+    <script src="{% static 'libs/bootstrap-select/js/bootstrap-select.min.js'%}"></script>
 
     <!-- Custom Js -->
     <script src="{% static 'js/admin.js' %}"></script>
-
+    <script src="{% static 'js/generic.js' %}"></script>
     <script src="{% static 'js/gate.js' %}"></script>
     <!-- child page js -->
     {% block child_page_js %}

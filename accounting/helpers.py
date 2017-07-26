@@ -38,4 +38,61 @@ class AccHelper():
             Head(user=new_user, parent_head_code=6, name="General Revenue", type="inc", head_code=28, ledger_head_code=""),
             Head(user=new_user, parent_head_code=5, name="General Expenditure", type="exp", head_code=29, ledger_head_code=""),
             Head(user=new_user, parent_head_code=17, name="Forbidden Adjustment", type="inc", head_code=30, ledger_head_code=""),
-        ]);
+        ])
+
+class AccConstant():
+
+    ASSET = "ast"
+    LIABILITY = "lib"
+    OWNERS_EQUITY = "oe"
+    EXPENSE = "exp"
+    INCOME = "inc"
+    DEBIT = "dr"
+    CREDIT = "cr"
+
+    VOUCHER_INVOICE_SALES = 1
+    VOUCHER_INVOICE_PURCHASE = 2
+    VOUCHER_INVOICE_EXPENSE = 5
+
+    VOUCHER_JOURNAL = 3
+    VOUCHER_CONTRA = 4
+    VOUCHER_PAYMENT = 5
+    VOUCHER_RECEIPT = 6
+
+    VOUCHER_DEBIT_NOTE = 7
+    VOUCHER_CREDIT_NOTE = 8
+
+    VOUCHER_VAT = 9
+    VOUCHER_DISCOUNT = 10
+
+    VOUCHER_STATUS_ENTERED = 1
+    VOUCHER_STATUS_UNDER_PROCESS = 2
+    VOUCHER_STATUS_PROCESSED = 3
+    VOUCHER_STATUS_INACTIVE = 0
+
+
+    ACC_HEAD_LOAN = 12
+    ACC_HEAD_STOCK = 13
+    ACC_HEAD_PAYABLE = 15
+    ACC_HEAD_RECEIVABLE = 16
+    ACC_HEAD_CASH = 19
+    ACC_HEAD_BANK = 20
+    ACC_HEAD_MOBILE_BANKING = 24
+    ACC_HEAD_VAT_ACCOUNT = 25
+    ACC_HEAD_SALES_DISCOUNT = 26
+    ACC_HEAD_SALES_REVENUE = 22
+    ACC_HEAD_SERVICE_REVENUE = 17
+    ACC_HEAD_COGS = 23
+    ACC_HEAD_CAPITAL = 2
+    ACC_HEAD_DIRECT_EXPENSES = 5
+    ACC_HEAD_INCOME_SUMMARY = 27
+    ACC_HEAD_FORBIDDEN_ADJUSTMENT = 30
+    ACC_HEAD_GENERAL_REVENUE = 28
+    ACC_HEAD_GENERAL_EXPENDITURE = 29
+
+    ACTIVE = 1
+    DISABLE = 0
+
+    SERVICE_EXPENDITURE = 18
+    SERVICE_REVENUE = 17
+

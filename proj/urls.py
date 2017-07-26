@@ -20,6 +20,7 @@ from base import urls as api
 
 urlpatterns = [
     url(r'^', include(api)),
+    url(r'^accounting/', include(account)),
 ]
 
 if settings.DEBUG:
