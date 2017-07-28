@@ -28,7 +28,6 @@ def login(request):
         return render(request, 'base/login.html')
 
 
-@transaction.atomic
 def register(request):
     """
     Handles registration
