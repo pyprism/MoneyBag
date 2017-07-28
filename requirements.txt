@@ -1,5 +1,5 @@
 autopep8==1.3.2
-certifi==2017.4.17
+certifi==2017.7.27
 chardet==3.0.4
 contextlib2==0.5.5
 Django==1.11.3
@@ -12,7 +12,7 @@ funcy==1.8
 idna==2.5
 Jinja2==2.9.6
 MarkupSafe==1.0
-psycopg2==2.7.1
+psycopg2==2.7.3
 pycodestyle==2.3.1
 Pygments==2.2.0
 python-dateutil==2.6.1
@@ -20,9 +20,9 @@ pytz==2017.2
 raven==6.1.0
 rcssmin==1.0.6
 redis==2.10.5
-requests==2.18.1
+requests==2.18.2
 rjsmin==1.0.12
 six==1.10.0
 sqlparse==0.2.3
-urllib3==1.21.1
+urllib3==1.22
 uWSGI==2.0.15
