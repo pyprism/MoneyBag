@@ -40,6 +40,13 @@ class AccHelper():
             Head(user=new_user, parent_head_code=17, name="Forbidden Adjustment", type="inc", head_code=30, ledger_head_code=""),
         ])
 
+    def get_all_group_heads(user):
+        return Head.objects.filter(user=user).values_list('head_code','name')
+    def get_head_type(parent_head_code,user_id):
+        parent_head = Head.objects.filter(head_code=parent_head_code,user=user_id).first()
+        return parent_head.type
+
+
 class AccConstant():
 
     ASSET = "ast"

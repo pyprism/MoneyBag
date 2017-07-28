@@ -11,7 +11,7 @@ class TransactionForm(ModelForm):
 class AccountHeadForm(ModelForm):
     class Meta:
         model = AccountHead
-        exclude = ('user', )
+        exclude = ('user','head_code',)
 
 
 class TransactionDetailsForm(ModelForm):
