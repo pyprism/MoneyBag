@@ -1,6 +1,15 @@
 /**
  * Created by hbot on 7/8/17.
  */
+$(function () {
+    //Tooltip
+    $('[data-toggle="tooltip"]').tooltip({
+        container: 'body'
+    });
+
+    //Popover
+    $('[data-toggle="popover"]').popover();
+})
 //On focus event
 $('.form-control').focus(function () {
     $(this).parent().addClass('focused');

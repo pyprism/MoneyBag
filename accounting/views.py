@@ -26,4 +26,10 @@ def add_ledger_head(request):
 
 @login_required
 def voucher_add(request,voucher_type):
-    return render(request, 'accounting/voucher-add.html')
+    return render(request, 'accounting/voucher-add.html')\
+
+@login_required
+def all_heads(request):
+    heads_tree = AccHelper.get_heads_tree(request.user)
+    context = {'tree':heads_tree[0]}
+    return render(request, 'accounting/heads.html',context)

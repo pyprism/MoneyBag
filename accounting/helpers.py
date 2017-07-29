@@ -8,18 +8,18 @@ class AccHelper():
 
     def create_all_basic_acc_heads(new_user):
         Head.objects.bulk_create([
-            Head(user=new_user, name="Branch / Divisions", type="ast", head_code=1, ledger_head_code=""),
-            Head(user=new_user, name="Capital Account", type="oe", head_code=2, ledger_head_code=""),
-            Head(user=new_user, name="Current Liabilities", type="lib", head_code=3, ledger_head_code=""),
-            Head(user=new_user, name="Current Assets", type="ast", head_code=4, ledger_head_code=""),
-            Head(user=new_user, name="Direct Expenses", type="exp", head_code=5, ledger_head_code=""),
-            Head(user=new_user, name="Direct Incomes", type="inc", head_code=6, ledger_head_code=""),
-            Head(user=new_user, name="Fixed Assets", type="ast", head_code=7, ledger_head_code=""),
-            Head(user=new_user, name="Indirect Expenses", type="exp", head_code=8, ledger_head_code=""),
-            Head(user=new_user, name="Indirect Incomes", type="inc", head_code=9, ledger_head_code=""),
-            Head(user=new_user, name="Investments", type="ast", head_code=10, ledger_head_code=""),
-            Head(user=new_user, name="Suspense A/c", type="ast", head_code=11, ledger_head_code=""),
-            Head(user=new_user, name="Loan Account", type="lib", head_code=12, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Branch / Divisions", type="ast", head_code=1, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Capital Account", type="oe", head_code=2, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Current Liabilities", type="lib", head_code=3, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Current Assets", type="ast", head_code=4, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Direct Expenses", type="exp", head_code=5, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Direct Incomes", type="inc", head_code=6, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Fixed Assets", type="ast", head_code=7, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Indirect Expenses", type="exp", head_code=8, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Indirect Incomes", type="inc", head_code=9, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Investments", type="ast", head_code=10, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Suspense A/c", type="ast", head_code=11, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name="Loan Account", type="lib", head_code=12, ledger_head_code=""),
             Head(user=new_user, parent_head_code=4, name="Stock", type="ast", head_code=13, ledger_head_code=""),
             Head(user=new_user, parent_head_code=7, name="Property and Equipment", type="ast", head_code=14, ledger_head_code=""),
             Head(user=new_user, parent_head_code=3, name="Payables", type="lib", head_code=15, ledger_head_code=""),
@@ -42,9 +42,38 @@ class AccHelper():
 
     def get_all_group_heads(user):
         return Head.objects.filter(user=user).values_list('head_code','name')
+
     def get_head_type(parent_head_code,user_id):
         parent_head = Head.objects.filter(head_code=parent_head_code,user=user_id).first()
         return parent_head.type
+
+    def get_heads_tree(user):
+        all_heads = Head.objects.filter(user=user).order_by('id')
+        heads_dict = dict()
+        #sort heads according to parent using dictonary of list of dict
+        for head in all_heads:
+            head_dict = {'name': head.name, 'head_code': head.head_code, 'id': head.id}
+            if head.parent_head_code in heads_dict:
+                heads_dict[head.parent_head_code].append(head_dict)
+            else:
+                heads_dict[head.parent_head_code] = [head_dict]
+        tstring = ['']
+        #call tree builder method
+        AccHelper.create_tree(heads_dict,heads_dict[list(heads_dict.keys())[0]],tstring)
+        return  tstring
+
+    #build head tree using recersive call from parent to child
+    def create_tree(heads, parent,tstring):
+        for l in parent:
+            tstring[0] +='<li class="tree-menu-item-hover"><span><p>'+l['name']+'</p><button type="button" class="tree-menu-item btn bg-blue btn-circle waves-effect waves-circle waves-light waves-float pull-right"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="material-icons">mode_edit</i></button></span></span></span>';
+            if l['id'] in heads:
+                tstring[0] +='<ul>'
+                #call method itself for child heads
+                AccHelper.create_tree(heads,heads[l['id']], tstring)
+                tstring[0] += '</ul>'
+                tstring[0] += '</li>'
+
+
 
 
 class AccConstant():
