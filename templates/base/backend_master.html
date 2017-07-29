@@ -33,6 +33,10 @@
         <!-- Custom Css -->
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <link href="{% static 'css/themes/theme-light-blue.min.css' %}" rel="stylesheet" />
+        <!-- child page css -->
+        {% block child_page_css %}
+
+        {% endblock %}
     {% endcompress %}
 </head>
 
@@ -209,12 +213,27 @@
         <!-- Menu -->
         <div class="menu">
             <ul class="list">
-                <li class="active">
+                <li {% if request.resolver_match.view_name  == "dashboard" %}class="active" {% endif %}>
                     <a href="{% url 'dashboard' %}">
                         <i class="material-icons">home</i>
                         <span>Dashboard</span>
                     </a>
                 </li>
+                <li {% if request.resolver_match.view_name  == "head.add_ledger" or request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
+                    <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
+                        <i class="material-icons">assignment</i>
+                        <span>Account Heads</span>
+                    </a>
+                    <ul class="ml-menu" style="display: none;">
+                        <li {% if request.resolver_match.view_name  == "head.add_ledger" %}class="active" {% endif %}>
+                            <a href="{% url 'head.add_ledger' %}" class=" waves-effect waves-block">Add Ledger Head</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
+                            <a href="{% url 'head.all' %}" class=" waves-effect waves-block">Heads</a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </div>
         <!-- #Menu -->

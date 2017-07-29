@@ -1,0 +1,77 @@
+.tree {
+    min-height: 20px;
+    margin-bottom: 20px;
+}
+.tree li {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative;
+}
+.tree>ul>li::before, .tree>ul>li::after {
+    border: 0;
+}
+
+.tree li::before {
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px;
+}
+
+.tree li::before, .tree li::after {
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto;
+}
+.tree li span {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    display: inline-block;
+    padding: 3px 8px;
+    text-decoration: none;
+}
+
+.tree-menu-item {
+    opacity: 0;
+    transition: opacity 0s ease-in 600ms, opacity 600ms;
+    position: relative;
+    cursor: pointer;
+}
+
+.tree-menu-item:after{
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    transition: width 600ms;
+}
+
+.tree-menu-item-hover:hover .tree-menu-item {
+    opacity: 1;
+    transition: opacity 0s ease-in 600ms, opacity 600ms;
+}
+
+.tree-menu-item-hover:hover .tree-menu-item:after{
+    width: 0;
+}
+.tree li::after {
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px;
+}
+.tree-menu-item-hover p{
+    display: inline-block !important;
+}
+.tree-menu-item-hover button{
+    display: inline-block !important;
+    top: -10px;
+    left: 10px;
+}
