@@ -1,4 +1,5 @@
 from .models import AccountHead as Head
+from django.db.models import Q
 
 '''
 This class has all helper method that need by accounting module
@@ -40,32 +41,46 @@ class AccHelper():
             Head(user=new_user, parent_head_code=17, name="Forbidden Adjustment", type="inc", head_code=30, ledger_head_code=""),
         ])
 
-    def get_all_group_heads(user):
-        return Head.objects.filter(user=user).values_list('head_code','name')
+    def get_all_group_heads(user,head_types=None):
+        if head_types:
+            return Head.objects.filter(Q(user=user),Q(parent_head_code__in=head_types) | Q(head_code__in=head_types)).order_by('id')
+
+        return Head.objects.filter(user=user).order_by('id')
+
+    def get_certain_group_heads(user,head_types):
+        return Head.objects.filter(user=user,head_code__in=head_types).order_by('id')
 
     def get_head_type(parent_head_code,user_id):
         parent_head = Head.objects.filter(head_code=parent_head_code,user=user_id).first()
         return parent_head.type
 
-    def get_heads_tree(user):
-        all_heads = Head.objects.filter(user=user).order_by('id')
+    def get_heads_tree(user,payments_only=None):
+        #all_heads = Head.objects.filter(user=user).order_by('id')
+        if payments_only:
+            head_types = [AccConstant.ACC_HEAD_CASH, AccConstant.ACC_HEAD_BANK, AccConstant.ACC_HEAD_MOBILE_BANKING]
+            all_heads = AccHelper.get_all_group_heads(user,head_types)
+        else:
+            all_heads = AccHelper.get_all_group_heads(user)
+
         heads_dict = dict()
         #sort heads according to parent using dictonary of list of dict
         for head in all_heads:
-            head_dict = {'name': head.name, 'head_code': head.head_code, 'id': head.id}
+            head_dict = {'name': head.name, 'head_code': head.head_code, 'id': head.id, 'ledger_head_code': head.ledger_head_code}
+            # print(head.parent_head_code,"=>",head_dict)
             if head.parent_head_code in heads_dict:
                 heads_dict[head.parent_head_code].append(head_dict)
             else:
                 heads_dict[head.parent_head_code] = [head_dict]
+
         tstring = ['']
         #call tree builder method
-        AccHelper.create_tree(heads_dict,heads_dict[list(heads_dict.keys())[0]],tstring)
+        AccHelper.create_tree(heads_dict,heads_dict[sorted(list(heads_dict.keys()))[0]],tstring)
         return  tstring
 
     #build head tree using recersive call from parent to child
     def create_tree(heads, parent,tstring):
         for l in parent:
-            tstring[0] +='<li class="tree-menu-item-hover"><span><p>'+l['name']+'</p><button type="button" class="tree-menu-item btn bg-blue btn-circle waves-effect waves-circle waves-light waves-float pull-right"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="material-icons">mode_edit</i></button></span></span></span>';
+            tstring[0] +='<li class="tree-menu-item-hover"><span><p>'+l['name']+'</p><button data-id="'+str(l['id'])+'" data-ledger-code="'+str(l['ledger_head_code'])+'" type="button" class="tree-menu-item btn bg-blue btn-circle waves-effect waves-circle waves-light waves-float pull-right btnEdit"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="material-icons">mode_edit</i></button></span></span></span>';
             if l['id'] in heads:
                 tstring[0] +='<ul>'
                 #call method itself for child heads

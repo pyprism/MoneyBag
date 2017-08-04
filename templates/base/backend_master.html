@@ -219,7 +219,7 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li {% if request.resolver_match.view_name  == "head.add_ledger" or request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
+                <li {% if request.resolver_match.view_name  == "head.add_ledger" or request.resolver_match.view_name  == "head.all" or request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
                     <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
                         <i class="material-icons">assignment</i>
                         <span>Account Heads</span>
@@ -227,6 +227,9 @@
                     <ul class="ml-menu" style="display: none;">
                         <li {% if request.resolver_match.view_name  == "head.add_ledger" %}class="active" {% endif %}>
                             <a href="{% url 'head.add_ledger' %}" class=" waves-effect waves-block">Add Ledger Head</a>
+                        </li>
+                    <li {% if request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
+                            <a href="{% url 'head.add_payment' %}" class=" waves-effect waves-block">Add Payment Head</a>
                         </li>
                         <li {% if request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
                             <a href="{% url 'head.all' %}" class=" waves-effect waves-block">Heads</a>

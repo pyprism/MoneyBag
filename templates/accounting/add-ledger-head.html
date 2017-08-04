@@ -23,7 +23,7 @@
                                         <i class="material-icons">more_vert</i>
                                     </a>
                                     <ul class="dropdown-menu pull-right">
-                                        <li><a href="javascript:void(0);">All Heads</a></li>
+                                        <li><a href="{% url 'head.all' %}">All Heads</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -44,7 +44,7 @@
                                         <select class="form-control myselect" name="parent_head_code" required>
                                             <option value="">-- Please select --</option>
                                             {% for head in heads %}
-                                                <option value="{{ head.0 }}">{{ head.1 }}</option>
+                                                <option value="{{ head.head_code }}">{{ head.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
