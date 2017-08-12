@@ -261,6 +261,22 @@
 
                     </ul>
                 </li>
+             <li {% if request.resolver_match.view_name  == "report.transactions" or request.resolver_match.view_name  == "report.incomes"%}class="active" {% endif %}>
+                    <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
+                        <i class="material-icons">insert_drive_file</i>
+                        <span>Reports</span>
+                    </a>
+                    <ul class="ml-menu" style="display: none;">
+                        <li {% if request.resolver_match.view_name  == "report.transactions" %}class="active" {% endif %}>
+                            <a href="{% url 'report.transactions' %}" class=" waves-effect waves-block">Transaction Statement</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "report.incomes"%}class="active" {% endif %}>
+                            <a href="{% url 'report.incomes'%}" class=" waves-effect waves-block">Income Statement</a>
+                        </li>
+
+
+                    </ul>
+                </li>
 
             </ul>
         </div>
