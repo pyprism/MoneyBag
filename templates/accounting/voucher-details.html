@@ -1,0 +1,79 @@
+{% extends "base/backend_master.html" %}
+{% block title %} Voucher Details {% endblock %}
+ {% load humanize %}
+{% block childPage %}
+    <section class="content print-body">
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-xs-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="body">
+                            <div class="row">
+                                <div class="col-xs-6">
+ <button type="button" class="btn btn-default btn-circle-lg waves-effect waves-circle waves-float btnPrint pull-left no-print">
+                                    <i class="material-icons">print</i>
+                                </button>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="description text-right">
+                                        <p class="desc-text">DATE: <strong>{{ voucher_info.transaction_date | date:"F d, Y"  }}</strong></p>
+                                        <p class="desc-text">Voucher No.: <strong>{{ voucher_info.voucher_number }}</strong></p>
+                                        <p class="desc-text">Status: <strong>PAID</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                        <h2 class="report-title">
+                                            <span class="round-title">
+                                           {% if voucher_info.voucher_type == 5 %} PAYMENT {% elif voucher_info.voucher_type == 6 %} RECEIPT {% endif %} VOUCHER
+                                        </span>
+                                        </h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="description">
+                                            <p class="desc-text">Being The Amount Paid In : <span class="bold-dash">{{ opsite_transaction.account_head.name }}</span></p>
+                                            <p class="desc-text">{% if voucher_info.voucher_type == 5 %} To {% elif voucher_info.voucher_type == 6 %} From {% endif %}: <span class="bold-dash">{{ transaction.account_head.name }}</span> </p>
+                                            <p class="desc-text">Ref: <span class="bold-dash">{{ voucher_info.description }}</span></p>
+                                            <p class="desc-text">The Ammount of Taka (in Words): <strong><span class="bold-dash"> {{ tkinwords }} taka Only.</span></strong></p><br>
+                                            <p class="desc-text"><strong class="border-1px">Total Tk. {{ transaction.amount | intcomma }}</strong></p>
+                                        </div>
+                                </div>
+                            </div>
+                        <br><br>
+
+                            <div class="row">
+                                     <div class="col-xs-6">
+                                          <div class="text-center">
+                                    <span class="dash">Received By</span>
+                                          </div>
+                                         
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="text-center">
+                                        <span class="dash">Approved By</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </section>
+
+{% endblock %}
+{% load staticfiles %}
+{% block child_page_js %}
+    <script>
+        $( document ).ready(function() {
+
+        });
+    </script>
+{% endblock %}

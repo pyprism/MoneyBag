@@ -19,6 +19,8 @@
     {% compress css %}
         <!-- Bootstrap Core Css -->
         <link href="{% static 'libs/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+        <!-- Bootstrap date time picker Css -->
+        <link href="{% static 'libs/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css' %}" rel="stylesheet" />
         <!-- Bootstrap Select Css -->
         <link href="{% static 'libs/select2/select2.min.css' %}" rel="stylesheet" />
 
@@ -30,6 +32,8 @@
 
         <!-- Morris Chart Css-->
         <link href="{% static 'libs/morrisjs/morris.css' %}" rel="stylesheet" />
+        <!-- bootstrap datatable Css-->
+        <link href="{% static 'libs/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css' %}" rel="stylesheet" />
         <!-- Custom Css -->
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <link href="{% static 'css/themes/theme-light-blue.min.css' %}" rel="stylesheet" />
@@ -42,7 +46,7 @@
 
 <body class="theme-light-blue">
 <!-- Page Loader -->
-<div class="page-loader-wrapper">
+<div class="page-loader-wrapper no-print">
     <div class="loader">
         <div class="preloader">
             <div class="spinner-layer pl-red">
@@ -62,7 +66,7 @@
 <div class="overlay"></div>
 <!-- #END# Overlay For Sidebars -->
 <!-- Top Bar -->
-<nav class="navbar">
+<nav class="navbar no-print">
     <div class="container-fluid">
         <div class="navbar-header">
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
@@ -187,9 +191,9 @@
     </div>
 </nav>
 <!-- #Top Bar -->
-<section>
+<section class="no-print">
     <!-- Left Sidebar -->
-    <aside id="leftsidebar" class="sidebar">
+    <aside id="leftsidebar" class="sidebar no-print">
         <!-- User Info -->
         <div class="user-info">
             <div class="image">
@@ -228,12 +232,27 @@
                         <li {% if request.resolver_match.view_name  == "head.add_ledger" %}class="active" {% endif %}>
                             <a href="{% url 'head.add_ledger' %}" class=" waves-effect waves-block">Add Ledger Head</a>
                         </li>
-                    <li {% if request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
+                        <li {% if request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
                             <a href="{% url 'head.add_payment' %}" class=" waves-effect waves-block">Add Payment Head</a>
                         </li>
                         <li {% if request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
                             <a href="{% url 'head.all' %}" class=" waves-effect waves-block">Heads</a>
                         </li>
+                    </ul>
+                </li>
+                <li {% if request.resolver_match.view_name  == "voucher.add" or request.resolver_match.view_name  == "voucher.details"%}class="active" {% endif %}>
+                    <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
+                        <i class="material-icons">event_note</i>
+                        <span>Voucher</span>
+                    </a>
+                    <ul class="ml-menu" style="display: none;">
+                        <li {% if request.resolver_match.view_name  == "voucher.add" and voucher_type == '6' %}class="active" {% endif %}>
+                            <a href="{% url 'voucher.add' 6 %}" class=" waves-effect waves-block">Add Recipt Voucher</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "voucher.add" and voucher_type == '5' %}class="active" {% endif %}>
+                            <a href="{% url 'voucher.add' 5 %}" class=" waves-effect waves-block">Add Payment Voucher</a>
+                        </li>
+
                     </ul>
                 </li>
 
@@ -302,12 +321,17 @@
     <!-- Select Plugin Js -->
     <script src="{% static 'libs/select2/select2.min.js'%}"></script>
 
+    <script src="{% static 'libs/momentjs/moment.js'%}"></script>
+    <!-- date time picker Plugin Js -->
+    <script src="{% static 'libs/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js'%}"></script>
+      <!-- datatable Plugin Js -->
+    <script src="{% static 'libs/jquery-datatable/jquery.dataTables.js'%}"></script>
+    <script src="{% static 'libs/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js'%}"></script>
+
     <!-- Custom Js -->
     <script src="{% static 'js/admin.js' %}"></script>
     <script src="{% static 'js/generic.js' %}"></script>
     <script src="{% static 'js/gate.js' %}"></script>
-
-    //message notification
     <script>
         jQuery(document).ready(function() {
             {% if messages %}

@@ -37,6 +37,29 @@ $('.form-control').each(function () {
         $(this).parents('.form-line').addClass('focused');
     }
 });
+
+
+    //Datetimepicker plugin
+    $('.datetimepicker').bootstrapMaterialDatePicker({
+        format: 'YYYY-MM-DD HH:mm',
+        clearButton: true,
+        weekStart: 1
+    });
+
+    $('.datepicker').bootstrapMaterialDatePicker({
+        format: 'YYYY-MM-DD',
+        clearButton: true,
+        weekStart: 1,
+        time: false,
+        currentDate: new Date()
+    });
+
+    $('.timepicker').bootstrapMaterialDatePicker({
+        format: 'HH:mm',
+        clearButton: true,
+        date: false
+    });
+
 //notifications
 function showNotification(colorName, text, placementFrom, placementAlign, animateEnter, animateExit) {
     if (colorName === null || colorName === '') { colorName = 'bg-black'; }
@@ -76,3 +99,7 @@ function showNotification(colorName, text, placementFrom, placementAlign, animat
 
 //select2
  $(".myselect").select2();
+//print page
+$('.btnPrint').click(function () {
+   window.print();
+});

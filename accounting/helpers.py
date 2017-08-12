@@ -1,11 +1,19 @@
 from .models import AccountHead as Head
 from django.db.models import Q
+from .models import Transaction,TransactionDetails
+from django.db import IntegrityError,transaction
+import random
+import string
 
 '''
-This class has all helper method that need by accounting module
+This file has all helper method that need by accounting module
 '''
 
 class AccHelper():
+    '''
+    This class has all helpter method that related to accounting
+    operation.
+    '''
 
     def create_all_basic_acc_heads(new_user):
         Head.objects.bulk_create([
@@ -88,10 +96,115 @@ class AccHelper():
                 tstring[0] += '</ul>'
                 tstring[0] += '</li>'
 
+    #form voucher validation
+    def validate_voucher(data):
+        payment_methods = data.getlist('payment_methods[]')
+        if data.get('acc_head_id',False) and data.get('date',False) and len(payment_methods):
+            return True
+        return False
+
+    #create random string
+    def generate_random_string(length):
+        return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(length))
+
+    #create voucher
+    def create_voucher(request,voucher_type):
+       voucher_id = 0
+       payment_methods = request.POST.getlist('payment_methods[]')
+       payment_methods_amount = request.POST.getlist('payment_method_amount[]')
+       payment_methods_note = request.POST.getlist('payment_method_note[]')
+
+       with transaction.atomic():
+           try:
+               if voucher_type == AccConstant.VOUCHER_RECEIPT:
+                   for index, item in enumerate(payment_methods):
+                       note = None
+                       if 0 <= index < len(payment_methods_note):
+                           note = payment_methods_note[index]
+
+                       trans_id = AccHelper.create_new_transaction(
+                           request.user.id,
+                           None,
+                           request.POST.get('date'),
+                           voucher_type,
+                           note
+                       )
+                       AccHelper.create_transaction_details(
+                           trans_id,
+                           payment_methods[index],
+                           AccConstant.DEBIT,
+                           payment_methods_amount[index]
+                       )
+                       AccHelper.create_transaction_details(
+                           trans_id,
+                           request.POST.get('acc_head_id'),
+                           AccConstant.CREDIT,
+                           payment_methods_amount[index]
+                       )
+                       voucher_id = trans_id
+               elif voucher_type == AccConstant.VOUCHER_PAYMENT:
+                   for index, item in enumerate(payment_methods):
+                       note = None
+                       if 0 <= index < len(payment_methods_note):
+                           note = payment_methods_note[index]
+
+                       trans_id = AccHelper.create_new_transaction(
+                           request.user.id,
+                           None,
+                           request.POST.get('date'),
+                           voucher_type,
+                           note
+                       )
+                       AccHelper.create_transaction_details(
+                           trans_id,
+                           payment_methods[index],
+                           AccConstant.CREDIT,
+                           payment_methods_amount[index]
+                       )
+                       AccHelper.create_transaction_details(
+                           trans_id,
+                           request.POST.get('acc_head_id'),
+                           AccConstant.DEBIT,
+                           payment_methods_amount[index]
+                       )
+                       voucher_id = trans_id
+           except IntegrityError:
+               return False
+
+       return voucher_id
 
 
+    #create account transaction
+    def create_new_transaction(user_id, ref_id, date, voucher_type, description):
+        new_tran = Transaction()
+        new_tran.user_id = user_id
+        if ref_id is not None:
+         new_tran.transaction_ref_id = ref_id
+        new_tran.transaction_date = date
+        new_tran.voucher_type = voucher_type
+        new_tran.voucher_number = AccHelper.generate_random_string(8)
+        new_tran.voucher_status = AccConstant.VOUCHER_STATUS_PROCESSED
+        if description is not None:
+            new_tran.description = description
+        new_tran.save()
+
+        return new_tran.id
+
+    #create account transaction details
+    def create_transaction_details(tran_id,account_head,position,amount):
+        details = TransactionDetails()
+        details.transaction_id = tran_id
+        details.account_head_id = account_head
+        details.position = position
+        details.amount = amount
+        details.save()
+
+        return True
 
 class AccConstant():
+    '''
+    This class is a static value container
+    '''
 
     ASSET = "ast"
     LIABILITY = "lib"
@@ -133,9 +246,11 @@ class AccConstant():
     ACC_HEAD_SALES_DISCOUNT = 26
     ACC_HEAD_SALES_REVENUE = 22
     ACC_HEAD_SERVICE_REVENUE = 17
+    ACC_HEAD_SERVICE_EXPENDITURE = 18
     ACC_HEAD_COGS = 23
     ACC_HEAD_CAPITAL = 2
     ACC_HEAD_DIRECT_EXPENSES = 5
+    ACC_HEAD_DIRECT_INCOMES = 6
     ACC_HEAD_INCOME_SUMMARY = 27
     ACC_HEAD_FORBIDDEN_ADJUSTMENT = 30
     ACC_HEAD_GENERAL_REVENUE = 28

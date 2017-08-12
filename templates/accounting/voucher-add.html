@@ -1,11 +1,81 @@
 {% extends "base/backend_master.html" %}
 
-{% block title %} Voucher {% endblock %}
+{% block title %} Voucher Add {% endblock %}
 
 {% block childPage %}
-    <section class="content">
+     <section class="content">
         <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD {% if voucher_type == "5" %} PAYMENT {% else %} RECEIPT {% endif %} VOUCHER</h2>
+                        </div>
+                        <div class="body">
+                            <form id="add_voucher" method="POST" action="{% url 'voucher.add' voucher_type %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                 <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <select class="form-control myselect" name="acc_head_id" required>
+                                            <option value="">-- Please select --</option>
+                                            {% for head in service_heads %}
+                                                <option value="{{ head.id }}">{{ head.name }}</option>
+                                            {% endfor %}
+                                         {% for head in heads %}
+                                                <option value="{{ head.id }}">{{ head.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="help-info">Heads</div>
 
+                                </div>
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                            <input type="text" class="datepicker form-control" placeholder="Please choose a date..." name="date" required>
+                                    </div>
+                                       <div class="help-info">Date</div>
+
+                                </div>
+{#                                todo:need to add payment methods table#}
+                                 <div  class="form-group form-float">
+                                        <h6>Payment Methods</h6>
+                                        <table id="payment_method_table" class="table table-bordered table-striped table-hover dataTable">
+                                            <thead>
+                                            <tr>
+                                                <th width="30%">Name</th>
+                                                <th width="25%">Amount</th>
+                                                <th width="35%">Note</th>
+                                                <th width="10%">&nbsp;</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td style="text-align: right">Total:</td>
+                                                <td><span class="payment_method_table_summation"></span></td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+                                        <div class="pull-right btn btn-info waves-effect" onclick="Voucher.addMorePaymentMethod()">Add Method</div>
+                                 </div>
+{#                                 <div class="form-group form-float">#}
+{#                                    <div class="form-line">#}
+{#                                        <textarea placeholder="Write Notes Here" class="form-control " name="description"></textarea>#}
+{#                                    </div>#}
+{#                                       <div class="help-info">Max: 500 letters</div>#}
+{#                                </div>#}
+
+                                <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Advanced Validation -->
 
         </div>
     </section>
@@ -13,9 +83,14 @@
 {% endblock %}
 {% load staticfiles %}
 {% block child_page_js %}
-    <script>
-        $( document ).ready(function() {
+        <script src="{% static 'js/voucher.js' %}"></script>
 
+    <script>
+            var PAYMENT_METHOD_LIST= JSON.parse('{{ paymentList | safe }}');
+
+        $( document ).ready(function() {
+            Gate.voucherFormValidate();
+            Voucher.init();
         });
     </script>
 {% endblock %}

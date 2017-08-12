@@ -128,5 +128,32 @@ var Gate = {
             });
 
         });
-    }
+    },
+     voucherFormValidate: function () {
+        $('#add_voucher').validate({
+            rules: {
+                'description':{
+                    maxlength: 500
+                }
+            },
+            highlight: function (input) {
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function (input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function (error, element) {
+                $(element).parents('.form-group').append(error);
+            }
+        });
+        $('#add_voucher').submit(function (e) {
+            e.preventDefault();
+           if(Voucher.payment_method_table_count){
+               this.submit();
+           }
+           else{
+                showNotification("bg-red", 'Please add payment method!', 'top', 'right', 'animated zoomInRight', 'animated zoomOutRight');
+           }
+        });
+    },
 };

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .helpers import AccHelper, AccConstant
@@ -6,7 +6,11 @@ from .forms import AccountHeadForm as headForm
 from random import randint
 from time import time
 from django.http import JsonResponse
-from .models import AccountHead
+from .models import AccountHead, Transaction, TransactionDetails
+from django.db.models import Q
+import json
+from num2words import num2words
+from pprint import pprint
 
 
 @login_required
@@ -25,7 +29,7 @@ def add_ledger_head(request):
 
     heads = AccHelper.get_all_group_heads(request.user)
     context = {'form':add_ledger_head_form,'heads':heads}
-    return render(request, 'accounting/add-ledger-head.html',context)\
+    return render(request, 'accounting/add-ledger-head.html',context)
 
 @login_required
 def add_payment_head(request):
@@ -46,7 +50,7 @@ def add_payment_head(request):
     tree = AccHelper.get_heads_tree(request.user,payments_only=True)
 
     context = {'form':add_ledger_head_form,'heads':heads, 'tree':tree[0]}
-    return render(request, 'accounting/add-payment-head.html',context)\
+    return render(request, 'accounting/add-payment-head.html',context)
 
 
 @login_required
@@ -73,13 +77,62 @@ def edit_ledger_head(request):
             'message': 'Method not allowed!'
         }, safe=False)
 
-
-@login_required
-def voucher_add(request,voucher_type):
-    return render(request, 'accounting/voucher-add.html')
-
 @login_required
 def all_heads(request):
     heads_tree = AccHelper.get_heads_tree(request.user)
     context = {'tree':heads_tree[0]}
     return render(request, 'accounting/heads.html',context)
+
+@login_required
+def voucher_add(request,voucher_type):
+    if request.method == "POST":
+        if AccHelper.validate_voucher(request.POST):
+            voucher_id = AccHelper.create_voucher(request,int(voucher_type))
+            if voucher_id:
+               messages.info(request, 'Voucher has been added.')
+               return redirect('voucher.details', voucher_id=voucher_id)
+            else:
+               messages.error(request, 'DB transaction error!')
+               return redirect('voucher.add', voucher_type=voucher_type)
+        else:
+            messages.error(request, 'Form not valid, fill up again!')
+            return redirect('voucher.add', voucher_type=voucher_type)
+    else:
+        if int(voucher_type) == AccConstant.VOUCHER_RECEIPT:
+            service_heads = AccountHead.objects.filter(user=request.user,parent_head_code=AccConstant.ACC_HEAD_SERVICE_REVENUE)
+            heads = AccountHead.objects.filter(Q(user=request.user),Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_INCOMES) | Q(parent_head_code=AccConstant.ACC_HEAD_LOAN),~Q(id=AccConstant.ACC_HEAD_SERVICE_REVENUE))
+        else:
+            service_heads = AccountHead.objects.filter(user=request.user,parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
+            heads = AccountHead.objects.filter(Q(user=request.user),Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),~Q(id=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE),~Q(id=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE))
+
+        paymentHeads = AccountHead.objects.filter(user=request.user,parent_head_code__in=[AccConstant.ACC_HEAD_CASH,AccConstant.ACC_HEAD_BANK,AccConstant.ACC_HEAD_MOBILE_BANKING]).order_by('id')
+        pmList = [];
+        for payHead in paymentHeads:
+            head = {
+                'id': payHead.id,
+                'text': payHead.name
+            }
+            pmList.append(head)
+
+
+        context = {'voucher_type':voucher_type, 'service_heads':service_heads, 'heads':heads, 'paymentList':json.dumps(pmList)}
+        return render(request, 'accounting/voucher-add.html',context)
+
+
+@login_required
+def voucher_details(request,voucher_id):
+    voucher_info = Transaction.objects.filter(id=voucher_id,user=request.user).first()
+    if not voucher_info:
+        messages.error(request, 'Voucher not found!')
+        return redirect('dashboard')
+
+    if voucher_info.voucher_type == AccConstant.VOUCHER_PAYMENT:
+        transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.DEBIT).select_related("account_head").first()
+        opsite_transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.CREDIT).select_related("account_head").first()
+
+    elif voucher_info.voucher_type == AccConstant.VOUCHER_RECEIPT:
+        transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.CREDIT).select_related("account_head").first()
+        opsite_transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.DEBIT).select_related("account_head").first()
+
+    context = {"voucher_info":voucher_info, "transaction": transaction, "opsite_transaction": opsite_transaction, "tkinwords": num2words(transaction.amount)}
+    return render(request, 'accounting/voucher-details.html', context)
