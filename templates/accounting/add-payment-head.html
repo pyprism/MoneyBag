@@ -1,0 +1,110 @@
+{% extends "base/backend_master.html" %}
+
+{% block title %} Head Add {% endblock %}
+{% load staticfiles %}
+{% block child_page_css %}
+    <link href="{% static 'css/tree.css' %}" rel="stylesheet">
+
+{% endblock %}
+{% block childPage %}
+    <section class="content">
+        <div class="container-fluid">
+            {% if form.errors %}
+                <div class="alert bg-red alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    {{ form.errors }}
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>ADD NEW PAYMENT HEAD</h2>
+                            <ul class="header-dropdown m-r--5">
+                                <li class="dropdown">
+                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">more_vert</i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="{% url 'head.all' %}">All Heads</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <form id="add_ledger_head" method="POST" action="{% url 'head.add_payment' %}" enctype="multipart/form-data">
+                                        {% csrf_token %}
+
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="name" maxlength="255" minlength="3" required>
+                                                <label class="form-label">Head Name</label>
+                                            </div>
+                                            <div class="help-info">Min. 3, Max. 255 characters</div>
+                                        </div>
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <select class="form-control myselect" name="parent_head_code" required>
+                                                    <option value="">-- Please select --</option>
+                                                    {% for head in heads %}
+                                                        <option value="{{ head.head_code }}">{{ head.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="help-info">Parent Head</div>
+
+                                        </div>
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="ledger_head_code" maxlength="255" minlength="3">
+                                                <label class="form-label">Ledger Head Code</label>
+                                            </div>
+                                            <div class="help-info">Min. 3, Max. 255 characters</div>
+                                        </div>
+
+                                        <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+                                    </form>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="header">
+                                            <h2>PAYMENT HEADS TREE</h2>
+                                        </div>
+                                        <div class="body">
+                                            <div class="tree">
+
+
+                                                <ul>
+                                                    {{ tree | safe  }}
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Advanced Validation -->
+
+        </div>
+    </section>
+    {% include 'accounting/modals/edit_head.html' %}
+
+{% endblock %}
+{% load staticfiles %}
+{% block child_page_js %}
+    <script>
+        $( document ).ready(function() {
+            Gate.ledgerHeadValidation();
+            Gate.editledgerHeadValidation();
+            Gate.headEditHandler();
+        });
+    </script>
+{% endblock %}

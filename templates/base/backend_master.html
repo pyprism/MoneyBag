@@ -19,6 +19,8 @@
     {% compress css %}
         <!-- Bootstrap Core Css -->
         <link href="{% static 'libs/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+        <!-- Bootstrap date time picker Css -->
+        <link href="{% static 'libs/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css' %}" rel="stylesheet" />
         <!-- Bootstrap Select Css -->
         <link href="{% static 'libs/select2/select2.min.css' %}" rel="stylesheet" />
 
@@ -30,6 +32,8 @@
 
         <!-- Morris Chart Css-->
         <link href="{% static 'libs/morrisjs/morris.css' %}" rel="stylesheet" />
+        <!-- bootstrap datatable Css-->
+        <link href="{% static 'libs/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css' %}" rel="stylesheet" />
         <!-- Custom Css -->
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <link href="{% static 'css/themes/theme-light-blue.min.css' %}" rel="stylesheet" />
@@ -42,7 +46,7 @@
 
 <body class="theme-light-blue">
 <!-- Page Loader -->
-<div class="page-loader-wrapper">
+<div class="page-loader-wrapper no-print">
     <div class="loader">
         <div class="preloader">
             <div class="spinner-layer pl-red">
@@ -62,134 +66,134 @@
 <div class="overlay"></div>
 <!-- #END# Overlay For Sidebars -->
 <!-- Top Bar -->
-<nav class="navbar">
+<nav class="navbar no-print">
     <div class="container-fluid">
         <div class="navbar-header">
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class="bars"></a>
             <a class="navbar-brand" href="index.html">MoneyBag - <small>Manage honey in your pocket</small></a>
         </div>
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-
-                <!-- Notifications -->
-                <li class="dropdown">
-                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                        <i class="material-icons">notifications</i>
-                        <span class="label-count">7</span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header">NOTIFICATIONS</li>
-                        <li class="body">
-                            <ul class="menu">
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-light-green">
-                                            <i class="material-icons">person_add</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4>12 new members joined</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 14 mins ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-cyan">
-                                            <i class="material-icons">add_shopping_cart</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4>4 sales made</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 22 mins ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-red">
-                                            <i class="material-icons">delete_forever</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4><b>Nancy Doe</b> deleted account</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 3 hours ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-orange">
-                                            <i class="material-icons">mode_edit</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4><b>Nancy</b> changed name</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 2 hours ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-blue-grey">
-                                            <i class="material-icons">comment</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4><b>John</b> commented your post</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 4 hours ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-light-green">
-                                            <i class="material-icons">cached</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4><b>John</b> updated status</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> 3 hours ago
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0);">
-                                        <div class="icon-circle bg-purple">
-                                            <i class="material-icons">settings</i>
-                                        </div>
-                                        <div class="menu-info">
-                                            <h4>Settings updated</h4>
-                                            <p>
-                                                <i class="material-icons">access_time</i> Yesterday
-                                            </p>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="footer">
-                            <a href="javascript:void(0);">View All Notifications</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- #END# Notifications -->
-
-            </ul>
-        </div>
+{#        <div class="collapse navbar-collapse" id="navbar-collapse">#}
+{#            <ul class="nav navbar-nav navbar-right">#}
+{##}
+{#                <!-- Notifications -->#}
+{#                <li class="dropdown">#}
+{#                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">#}
+{#                        <i class="material-icons">notifications</i>#}
+{#                        <span class="label-count">7</span>#}
+{#                    </a>#}
+{#                    <ul class="dropdown-menu">#}
+{#                        <li class="header">NOTIFICATIONS</li>#}
+{#                        <li class="body">#}
+{#                            <ul class="menu">#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-light-green">#}
+{#                                            <i class="material-icons">person_add</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4>12 new members joined</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 14 mins ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-cyan">#}
+{#                                            <i class="material-icons">add_shopping_cart</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4>4 sales made</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 22 mins ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-red">#}
+{#                                            <i class="material-icons">delete_forever</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4><b>Nancy Doe</b> deleted account</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 3 hours ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-orange">#}
+{#                                            <i class="material-icons">mode_edit</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4><b>Nancy</b> changed name</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 2 hours ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-blue-grey">#}
+{#                                            <i class="material-icons">comment</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4><b>John</b> commented your post</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 4 hours ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-light-green">#}
+{#                                            <i class="material-icons">cached</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4><b>John</b> updated status</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> 3 hours ago#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li>#}
+{#                                    <a href="javascript:void(0);">#}
+{#                                        <div class="icon-circle bg-purple">#}
+{#                                            <i class="material-icons">settings</i>#}
+{#                                        </div>#}
+{#                                        <div class="menu-info">#}
+{#                                            <h4>Settings updated</h4>#}
+{#                                            <p>#}
+{#                                                <i class="material-icons">access_time</i> Yesterday#}
+{#                                            </p>#}
+{#                                        </div>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                            </ul>#}
+{#                        </li>#}
+{#                        <li class="footer">#}
+{#                            <a href="javascript:void(0);">View All Notifications</a>#}
+{#                        </li>#}
+{#                    </ul>#}
+{#                </li>#}
+{#                <!-- #END# Notifications -->#}
+{##}
+{#            </ul>#}
+{#        </div>#}
     </div>
 </nav>
 <!-- #Top Bar -->
-<section>
+<section class="no-print">
     <!-- Left Sidebar -->
-    <aside id="leftsidebar" class="sidebar">
+    <aside id="leftsidebar" class="sidebar no-print">
         <!-- User Info -->
         <div class="user-info">
             <div class="image">
@@ -219,7 +223,7 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li {% if request.resolver_match.view_name  == "head.add_ledger" or request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
+                <li {% if request.resolver_match.view_name  == "head.add_ledger" or request.resolver_match.view_name  == "head.all" or request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
                     <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
                         <i class="material-icons">assignment</i>
                         <span>Account Heads</span>
@@ -228,9 +232,33 @@
                         <li {% if request.resolver_match.view_name  == "head.add_ledger" %}class="active" {% endif %}>
                             <a href="{% url 'head.add_ledger' %}" class=" waves-effect waves-block">Add Ledger Head</a>
                         </li>
+                        <li {% if request.resolver_match.view_name  == "head.add_payment" %}class="active" {% endif %}>
+                            <a href="{% url 'head.add_payment' %}" class=" waves-effect waves-block">Add Payment Head</a>
+                        </li>
                         <li {% if request.resolver_match.view_name  == "head.all" %}class="active" {% endif %}>
                             <a href="{% url 'head.all' %}" class=" waves-effect waves-block">Heads</a>
                         </li>
+                    </ul>
+                </li>
+                <li {% if request.resolver_match.view_name  == "voucher.add" or request.resolver_match.view_name  == "voucher.details" or request.resolver_match.view_name  == "acc-voucher.add"%}class="active" {% endif %}>
+                    <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
+                        <i class="material-icons">event_note</i>
+                        <span>Voucher</span>
+                    </a>
+                    <ul class="ml-menu" style="display: none;">
+                        <li {% if request.resolver_match.view_name  == "voucher.add" and voucher_type == '6' %}class="active" {% endif %}>
+                            <a href="{% url 'voucher.add' 6 %}" class=" waves-effect waves-block">Add Recipt Voucher</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "voucher.add" and voucher_type == '5' %}class="active" {% endif %}>
+                            <a href="{% url 'voucher.add' 5 %}" class=" waves-effect waves-block">Add Payment Voucher</a>
+                        </li>
+                     <li {% if request.resolver_match.view_name  == "acc-voucher.add" and voucher_type == '3' %}class="active" {% endif %}>
+                            <a href="{% url 'acc-voucher.add' 3 %}" class=" waves-effect waves-block">Journal Voucher</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "acc-voucher.add" and voucher_type == '4' %}class="active" {% endif %}>
+                            <a href="{% url 'acc-voucher.add' 4 %}" class=" waves-effect waves-block">Contra Voucher</a>
+                        </li>
+
                     </ul>
                 </li>
 
@@ -299,12 +327,17 @@
     <!-- Select Plugin Js -->
     <script src="{% static 'libs/select2/select2.min.js'%}"></script>
 
+    <script src="{% static 'libs/momentjs/moment.js'%}"></script>
+    <!-- date time picker Plugin Js -->
+    <script src="{% static 'libs/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js'%}"></script>
+      <!-- datatable Plugin Js -->
+    <script src="{% static 'libs/jquery-datatable/jquery.dataTables.js'%}"></script>
+    <script src="{% static 'libs/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.min.js'%}"></script>
+
     <!-- Custom Js -->
     <script src="{% static 'js/admin.js' %}"></script>
     <script src="{% static 'js/generic.js' %}"></script>
     <script src="{% static 'js/gate.js' %}"></script>
-
-    //message notification
     <script>
         jQuery(document).ready(function() {
             {% if messages %}

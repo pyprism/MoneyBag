@@ -44,12 +44,12 @@ class Transaction(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    transaction_date = models.DateTimeField(null=True, blank=True)
+    transaction_date = models.DateField(null=True, blank=True)
     transaction_ref = models.ForeignKey('Transaction', null=True, blank=True, on_delete=models.PROTECT)
     voucher_type = models.SmallIntegerField(choices=VOUCHER_TYPES)
     voucher_number = models.CharField(max_length=255, blank=True)
     voucher_status = models.SmallIntegerField(choices=STATUS_TYPES)
-    description = models.TextField(blank=True)
+    description = models.TextField(null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -60,7 +60,7 @@ class TransactionDetails(models.Model):
     )
 
     transaction = models.ForeignKey('Transaction', on_delete=models.PROTECT)
-    account_head = models.ForeignKey('AccountHead', on_delete=models.PROTECT)
+    account_head = models.ForeignKey('AccountHead', on_delete=models.PROTECT, related_name="head_name")
     position = models.CharField(choices=TRANS_POSITION, max_length=5)
     amount = models.DecimalField(max_digits=18, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
