@@ -211,6 +211,20 @@ class AccHelper():
         parent_heads = Head.objects.filter(user=user).values_list('parent_head_code',flat=True).distinct()
         child_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=parent_heads),~Q(head_code__in=parent_heads)).order_by('name').values_list('id','name')
         return child_heads
+
+    #get voucher full name
+    def get_voucher_type_name(type):
+        return {
+            AccConstant.VOUCHER_PAYMENT : 'Payment Voucher',
+            AccConstant.VOUCHER_RECEIPT : 'Receipt Voucher',
+            AccConstant.VOUCHER_CONTRA : 'Contra Voucher',
+            AccConstant.VOUCHER_JOURNAL : 'Journal Voucher',
+            AccConstant.VOUCHER_DEBIT_NOTE : 'Debit Note',
+            AccConstant.VOUCHER_CREDIT_NOTE : 'Credit Note',
+            AccConstant.VOUCHER_VAT : 'Vat Challan',
+            AccConstant.VOUCHER_DISCOUNT : 'Discount Voucher',
+        }[type]
+
 class AccConstant():
     '''
     This class is a static value container

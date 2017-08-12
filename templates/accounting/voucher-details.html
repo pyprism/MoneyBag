@@ -18,7 +18,7 @@
                                     <div class="description text-right">
                                         <p class="desc-text">DATE: <strong>{{ voucher_info.transaction_date | date:"F d, Y"  }}</strong></p>
                                         <p class="desc-text">Voucher No.: <strong>{{ voucher_info.voucher_number }}</strong></p>
-                                        <p class="desc-text">Status: <strong>PAID</strong></p>
+                                       {% if voucher_info.voucher_type == 5 and voucher_info.voucher_type == 6 %} <p class="desc-text">Status: <strong>PAID</strong></p> {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -26,7 +26,7 @@
                                 <div class="col-xs-12">
                                         <h2 class="report-title">
                                             <span class="round-title">
-                                           {% if voucher_info.voucher_type == 5 %} PAYMENT {% elif voucher_info.voucher_type == 6 %} RECEIPT {% endif %} VOUCHER
+                                           {% if voucher_info.voucher_type == 5 %} PAYMENT {% elif voucher_info.voucher_type == 6 %} RECEIPT {% elif voucher_info.voucher_type == 3 %} JOURNAL {% elif voucher_info.voucher_type == 4 %} CONTRA {% endif %} VOUCHER
                                         </span>
                                         </h2>
                                 </div>
@@ -34,10 +34,14 @@
                             <div class="row">
                                     <div class="col-xs-12">
                                         <div class="description">
+                                            {% if voucher_info.voucher_type == 5 and voucher_info.voucher_type == 6 %}
                                             <p class="desc-text">Being The Amount Paid In : <span class="bold-dash">{{ opsite_transaction.account_head.name }}</span></p>
                                             <p class="desc-text">{% if voucher_info.voucher_type == 5 %} To {% elif voucher_info.voucher_type == 6 %} From {% endif %}: <span class="bold-dash">{{ transaction.account_head.name }}</span> </p>
+                                            {% else %}
+                                                <p class="desc-text">Transfer The Amount From: <span class="bold-dash">{{ transaction.account_head.name }}</span> To  <span class="bold-dash">{{ opsite_transaction.account_head.name }}</span></p>
+                                            {% endif %}
                                             <p class="desc-text">Ref: <span class="bold-dash">{{ voucher_info.description }}</span></p>
-                                            <p class="desc-text">The Ammount of Taka (in Words): <strong><span class="bold-dash"> {{ tkinwords }} taka Only.</span></strong></p><br>
+                                            <p class="desc-text">The Amount of Taka (in Words): <strong><span class="bold-dash"> {{ tkinwords }} taka Only.</span></strong></p><br>
                                             <p class="desc-text"><strong class="border-1px">Total Tk. {{ transaction.amount | intcomma }}</strong></p>
                                         </div>
                                 </div>

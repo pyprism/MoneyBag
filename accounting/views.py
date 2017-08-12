@@ -5,11 +5,13 @@ from .helpers import AccHelper, AccConstant
 from .forms import AccountHeadForm as headForm
 from random import randint
 from time import time
+from datetime import datetime
 from django.http import JsonResponse
 from .models import AccountHead, Transaction, TransactionDetails
 from django.db.models import Q
 import json
 from num2words import num2words
+from dateutil.relativedelta import relativedelta
 from pprint import pprint
 
 
@@ -135,6 +137,9 @@ def voucher_details(request,voucher_id):
     elif voucher_info.voucher_type == AccConstant.VOUCHER_RECEIPT:
         transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.CREDIT).select_related("account_head").first()
         opsite_transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.DEBIT).select_related("account_head").first()
+    else:
+        transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.CREDIT).select_related("account_head").first()
+        opsite_transaction = TransactionDetails.objects.filter(transaction_id=voucher_info.id,position=AccConstant.DEBIT).select_related("account_head").first()
 
     context = {"voucher_info":voucher_info, "transaction": transaction, "opsite_transaction": opsite_transaction, "tkinwords": num2words(transaction.amount)}
     return render(request, 'accounting/voucher-details.html', context)
@@ -181,4 +186,49 @@ def acc_voucher_add(request,voucher_type):
 
 
         context = {'voucher_type':voucher_type, 'dr_heads':dr_heads, 'cr_heads':cr_heads}
-        return render(request, 'accounting/acc-voucher-add.html',context)
+        return render(request, 'accounting/acc-voucher-add.html',context)\
+
+
+@login_required
+def transaction_statement(request):
+    date_from = request.GET.get('date_from',False)
+    date_to = request.GET.get('date_to',False)
+    if not date_from and not date_to:
+        current_date = datetime.today()
+        ten_days_before = current_date + relativedelta(days=-10)
+        date_from = ten_days_before.strftime('%Y-%m-%d')
+        date_to = current_date.strftime('%Y-%m-%d')
+
+    transactions = TransactionDetails.objects.select_related('transaction').filter(
+        transaction__user=request.user,
+        transaction__transaction_date__range=[date_from,date_to]
+    ).select_related('account_head').order_by('-transaction__transaction_date','-position')
+
+    trans_statements = dict()
+    for transaction in transactions:
+        if transaction.position == AccConstant.DEBIT:
+            voucher_type = 'Debited'
+        else:
+            voucher_type = "Credited"
+
+        if transaction.transaction.id in trans_statements:
+            account = transaction.account_head.name + '(' + voucher_type + ')'
+            trans_statements[transaction.transaction.id][0]['accounts'].append(account)
+            trans_statements[transaction.transaction.id][0]['description'].append(transaction.amount)
+        else:
+            single_trans = {
+                'type': AccHelper.get_voucher_type_name(transaction.transaction.voucher_type),
+                'date': transaction.transaction.transaction_date,
+                'accounts': [transaction.account_head.name + '(' + voucher_type + ')'],
+                'description': [transaction.amount]
+            }
+            trans_statements[transaction.transaction.id] = [single_trans]
+    context = {'trans_statements': trans_statements, 'date_from': datetime.strptime(date_from,'%Y-%m-%d'), 'date_to': datetime.strptime(date_to,'%Y-%m-%d')}
+    return render(request, 'accounting/report/transaction-statements.html',context)
+
+
+@login_required
+def income_statement(request):
+    transactions = []
+    context = {'transactions': transactions}
+    return render(request, 'accounting/report/transaction-statements.html',context)
