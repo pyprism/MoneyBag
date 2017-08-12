@@ -102,6 +102,11 @@ class AccHelper():
         if data.get('acc_head_id',False) and data.get('date',False) and len(payment_methods):
             return True
         return False
+    #form acc voucher validation
+    def validate_acc_voucher(data):
+        if data.get('debit_head',False) and data.get('credit_head',False) and data.get('date',False) and data.get('amount'):
+            return True
+        return False
 
     #create random string
     def generate_random_string(length):
@@ -201,6 +206,11 @@ class AccHelper():
 
         return True
 
+    #get child heads
+    def get_all_child_heads(user):
+        parent_heads = Head.objects.filter(user=user).values_list('parent_head_code',flat=True).distinct()
+        child_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=parent_heads),~Q(head_code__in=parent_heads)).order_by('name').values_list('id','name')
+        return child_heads
 class AccConstant():
     '''
     This class is a static value container

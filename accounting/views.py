@@ -101,10 +101,12 @@ def voucher_add(request,voucher_type):
         if int(voucher_type) == AccConstant.VOUCHER_RECEIPT:
             service_heads = AccountHead.objects.filter(user=request.user,parent_head_code=AccConstant.ACC_HEAD_SERVICE_REVENUE)
             heads = AccountHead.objects.filter(Q(user=request.user),Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_INCOMES) | Q(parent_head_code=AccConstant.ACC_HEAD_LOAN),~Q(id=AccConstant.ACC_HEAD_SERVICE_REVENUE))
-        else:
+        elif int(voucher_type) == AccConstant.VOUCHER_PAYMENT:
             service_heads = AccountHead.objects.filter(user=request.user,parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
             heads = AccountHead.objects.filter(Q(user=request.user),Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),~Q(id=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE),~Q(id=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE))
-
+        else:
+            service_heads = []
+            heads = []
         paymentHeads = AccountHead.objects.filter(user=request.user,parent_head_code__in=[AccConstant.ACC_HEAD_CASH,AccConstant.ACC_HEAD_BANK,AccConstant.ACC_HEAD_MOBILE_BANKING]).order_by('id')
         pmList = [];
         for payHead in paymentHeads:
@@ -136,3 +138,47 @@ def voucher_details(request,voucher_id):
 
     context = {"voucher_info":voucher_info, "transaction": transaction, "opsite_transaction": opsite_transaction, "tkinwords": num2words(transaction.amount)}
     return render(request, 'accounting/voucher-details.html', context)
+
+@login_required
+def acc_voucher_add(request,voucher_type):
+    if request.method == "POST":
+        if AccHelper.validate_acc_voucher(request.POST):
+           transId = AccHelper.create_new_transaction(
+               request.user.id,
+               None,
+               request.POST.get('date'),
+               voucher_type,
+               request.POST.get('description')
+           )
+           AccHelper.create_transaction_details(
+               transId,
+               request.POST.get('debit_head'),
+               AccConstant.DEBIT,
+               request.POST.get('amount')
+           )
+           AccHelper.create_transaction_details(
+               transId,
+               request.POST.get('credit_head'),
+               AccConstant.CREDIT,
+               request.POST.get('amount')
+           )
+           messages.info(request, 'Voucher has been added.')
+
+        else:
+            messages.error(request, 'Form not valid, fill up again!')
+
+        return redirect('acc-voucher.add', voucher_type=voucher_type)
+    else:
+        if int(voucher_type) == AccConstant.VOUCHER_CONTRA:
+            dr_heads = AccountHead.objects.filter(user=request.user,parent_head_code__in=[AccConstant.ACC_HEAD_CASH,AccConstant.ACC_HEAD_BANK]).order_by('name').values_list('id','name')
+            cr_heads = dr_heads
+        elif int(voucher_type) == AccConstant.VOUCHER_JOURNAL:
+            dr_heads = AccHelper.get_all_child_heads(request.user)
+            cr_heads = dr_heads
+        else:
+            dr_heads = []
+            cr_heads = []
+
+
+        context = {'voucher_type':voucher_type, 'dr_heads':dr_heads, 'cr_heads':cr_heads}
+        return render(request, 'accounting/acc-voucher-add.html',context)

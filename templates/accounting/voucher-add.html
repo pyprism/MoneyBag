@@ -9,7 +9,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="card">
                         <div class="header">
-                            <h2>ADD {% if voucher_type == "5" %} PAYMENT {% else %} RECEIPT {% endif %} VOUCHER</h2>
+                            <h2>ADD {% if voucher_type == "5" %} PAYMENT {% elif voucher_type == "6" %} RECEIPT {% else %} UNKNOWN {% endif %} VOUCHER</h2>
                         </div>
                         <div class="body">
                             <form id="add_voucher" method="POST" action="{% url 'voucher.add' voucher_type %}" enctype="multipart/form-data">
@@ -36,7 +36,6 @@
                                        <div class="help-info">Date</div>
 
                                 </div>
-{#                                todo:need to add payment methods table#}
                                  <div  class="form-group form-float">
                                         <h6>Payment Methods</h6>
                                         <table id="payment_method_table" class="table table-bordered table-striped table-hover dataTable">
