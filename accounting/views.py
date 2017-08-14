@@ -229,6 +229,10 @@ def transaction_statement(request):
 
 @login_required
 def income_statement(request):
-    transactions = []
-    context = {'transactions': transactions}
-    return render(request, 'accounting/report/transaction-statements.html',context)
+    month_year = request.GET.get('monthYear', False)
+    if not month_year:
+        current_date = datetime.today()
+        month_year = current_date.strftime('%Y-%m')
+    income_statements = AccHelper.generate_income_statement(request.user,month_year)
+    context = {'month_year': datetime.strptime(month_year,'%Y-%m'), 'income_statements': income_statements}
+    return render(request, 'accounting/report/income-statements.html',context)

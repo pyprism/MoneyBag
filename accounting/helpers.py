@@ -4,6 +4,9 @@ from .models import Transaction,TransactionDetails
 from django.db import IntegrityError,transaction
 import random
 import string
+from calendar import monthrange
+from pprint import pprint
+from decimal import Decimal
 
 '''
 This file has all helper method that need by accounting module
@@ -224,6 +227,167 @@ class AccHelper():
             AccConstant.VOUCHER_VAT : 'Vat Challan',
             AccConstant.VOUCHER_DISCOUNT : 'Discount Voucher',
         }[type]
+
+    #detect account type
+    def detect_account_type(account):
+        return {
+            'oe' : 'cr',
+            'ast' : 'dr',
+            'lib' : 'cr',
+            'inc' : 'cr',
+            'exp' : 'dr',
+        }[account]
+
+    #generate income statements
+    def generate_income_statement(user,month_year):
+        #get all the receipts
+        receipts = Head.objects.filter(user=user,parent_head_code=0,type=AccConstant.INCOME)
+        income_statement_content = [{
+            'title': '<b>Revenues</b>',
+            'amount_column_1': '',
+            'amount_column_2': ''
+        }]
+        income = [0]
+        for recipt in receipts:
+            AccHelper.develop_childs_statement(user,recipt,income_statement_content,month_year,AccConstant.INCOME,0,income)
+
+        income_statement_content.append(
+            {
+                'title': '',
+                'amount_column_1': '',
+                'amount_column_2': income[0]
+
+            }
+        )
+        income_statement_content.append(
+            {
+                'title': '',
+                'amount_column_1': '',
+                'amount_column_2': ''
+
+            }
+        )
+        # get all the payments
+        income_statement_content.append(
+            {
+                'title': '<b>Expenses</b>',
+                'amount_column_1': '',
+                'amount_column_2': ''
+
+            }
+        )
+        # get all the receipts
+        receipts = Head.objects.filter(user=user, parent_head_code=0, type=AccConstant.EXPENSE)
+        expense = [0]
+        for recipt in receipts:
+            AccHelper.develop_childs_statement(user, recipt, income_statement_content, month_year, AccConstant.EXPENSE, 0, expense)
+
+        income_statement_content.append(
+            {
+                'title': '',
+                'amount_column_1': '',
+                'amount_column_2': expense[0]
+
+            }
+        )
+        income_statement_content.append(
+            {
+                'title': '',
+                'amount_column_1': '',
+                'amount_column_2': ''
+
+            }
+        )
+        net_income = income[0] - expense[0]
+        if net_income >= 0:
+            income_statement_content.append(
+                {
+                    'title': '<b>Net Income</b>',
+                    'amount_column_1': '',
+                    'amount_column_2': '<b>'+str(net_income)+'<b>'
+
+                }
+            )
+        else:
+            income_statement_content.append(
+                {
+                    'title': '<b>Net Loss</b>',
+                    'amount_column_1': '',
+                    'amount_column_2': '<b>' + str(abs(net_income)) + '<b>'
+
+                }
+            )
+        return income_statement_content
+
+    #get child heads statement
+    def develop_childs_statement(user,head_info,income_statement_content,month_year,st_type,level,summation):
+        child_heads = Head.objects.filter(user=user,parent_head_code=head_info.head_code).count()
+        if child_heads:
+            #get childs
+            receipts = Head.objects.filter(user=user, parent_head_code=head_info.head_code)
+            spaces =""
+            for x in range(0,level):
+                spaces = spaces + '&nbsp;&nbsp;&nbsp;'
+
+                income_statement_content.append(
+                {
+                    'title': spaces+head_info.name+':',
+                    'amount_column_1': '',
+                    'amount_column_2': ''
+
+                }
+                )
+
+            level = level + 1
+            for receipt in receipts:
+                AccHelper.develop_childs_statement(user,receipt,income_statement_content,month_year,st_type,level,summation)
+
+        else:
+            total = Decimal(0.00)
+            #head has no child so lets search its transation total
+            #get request month last day
+            month_year_part = month_year.split('-')
+            last_day = monthrange(int(month_year_part[0]),int(month_year_part[1]))
+            date_q = month_year+'-'+str(last_day[1])
+
+            #get unique transactions
+            unique_transactions = TransactionDetails.objects.select_related('transaction').filter(
+                Q(transaction__transaction_date__lte=date_q),
+                Q(account_head_id=head_info.id)
+            ).values_list('transaction_id',flat=True)
+
+            #get transactions
+            transactions = TransactionDetails.objects.select_related('transaction').filter(
+                Q(transaction_id__in=unique_transactions),
+                ~Q(account_head_id=head_info.id)
+            )
+
+            for transaction in transactions:
+                if AccHelper.detect_account_type(st_type) == AccConstant.DEBIT:
+                    if transaction.position == AccConstant.DEBIT:
+                        total = total - transaction.amount
+                    else:
+                        total = total + transaction.amount
+                else:
+                    if transaction.position == AccConstant.CREDIT:
+                        total = total - transaction.amount
+                    else:
+                        total = total + transaction.amount
+
+            summation[0] = summation[0] + total
+            spaces = ""
+            for x in range(0, level):
+                spaces = spaces + '&nbsp;&nbsp;&nbsp;'
+
+            income_statement_content.append(
+                {
+                    'title': spaces + head_info.name + ':',
+                    'amount_column_1': total,
+                    'amount_column_2': ''
+
+                }
+            )
+
 
 class AccConstant():
     '''

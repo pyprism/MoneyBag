@@ -56,7 +56,11 @@ $('.form-control').each(function () {
         weekStart: 1,
         time: false,
     });
-
+    $('.datepicker3').bootstrapMaterialDatePicker({
+        format: 'YYYY-MM',
+        time:false,
+        monthPicker:true,
+    });
     $('.timepicker').bootstrapMaterialDatePicker({
         format: 'HH:mm',
         date: false
