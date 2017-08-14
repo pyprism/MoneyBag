@@ -1,0 +1,79 @@
+{% extends "base/backend_master.html" %}
+
+{% block title %} Income Statement {% endblock %}
+
+{% block childPage %}
+    <section class="content print-body">
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header" style="min-height: 75px;">
+                            <h2 class="pull-left">Income Statement For {{ month_year | date:"F,Y" }}</h2>
+                            <button type="button" class="btn btn-default btn-circle-lg waves-effect waves-circle waves-float btnPrint pull-right no-print" style="top:-10px;">
+                                <i class="material-icons">print</i>
+                            </button>
+                        </div>
+                        <div class="body">
+                            <div class="row no-print">
+                                <form method="GET" action="{% url 'report.incomes' %}" enctype="multipart/form-data">
+                                    <div class="col-md-5">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" value="{{ month_year | date:"Y-m"}}" class="datepicker3 form-control" placeholder="Please choose a month..." name="monthYear" required>
+                                            </div>
+                                            <div class="help-info">Month</div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button class="btn btn-circle-lg btn-primary waves-effect" type="submit">GET</button>
+                                    </div>
+
+
+
+                                </form>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered ptable">
+                                        <tr>
+                                        <th width="60%"></th>
+                                        <th style="text-align: center" width="20%">Amount (tk)</th>
+                                        <th style="text-align: center" width="20%">Amount (tk)</th>
+                                    </tr>
+
+                                        {% for transaction in income_statements %}
+                                            <tr>
+                                                <td>
+                                                    {{ transaction.title | safe }}
+                                                </td>
+                                                <td style="text-align: center" >
+                                                    {{ transaction.amount_column_1 }}
+                                                </td>
+                                                <td style="text-align: center" >
+                                                    {{ transaction.amount_column_2 | safe }}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+<!-- child page js -->
+{% block child_page_js %}
+    <script>
+        jQuery(document).ready(function() {
+        });
+    </script>
+{% endblock %}
