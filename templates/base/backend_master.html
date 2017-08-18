@@ -261,7 +261,7 @@
 
                     </ul>
                 </li>
-             <li {% if request.resolver_match.view_name  == "report.transactions" or request.resolver_match.view_name  == "report.incomes"%}class="active" {% endif %}>
+             <li {% if request.resolver_match.view_name  == "report.transactions" or request.resolver_match.view_name  == "report.incomes" or request.resolver_match.view_name  == "report.ledger"%}class="active" {% endif %}>
                     <a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
                         <i class="material-icons">insert_drive_file</i>
                         <span>Reports</span>
@@ -272,6 +272,9 @@
                         </li>
                         <li {% if request.resolver_match.view_name  == "report.incomes"%}class="active" {% endif %}>
                             <a href="{% url 'report.incomes'%}" class=" waves-effect waves-block">Income Statement</a>
+                        </li>
+                        <li {% if request.resolver_match.view_name  == "report.ledger"%}class="active" {% endif %}>
+                            <a href="{% url 'report.ledger'%}" class=" waves-effect waves-block">Ledger Statement</a>
                         </li>
 
 

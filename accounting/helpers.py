@@ -255,8 +255,7 @@ class AccHelper():
             {
                 'title': '',
                 'amount_column_1': '',
-                'amount_column_2': income[0]
-
+                'amount_column_2': format(income[0], '.2f')
             }
         )
         income_statement_content.append(
@@ -286,7 +285,7 @@ class AccHelper():
             {
                 'title': '',
                 'amount_column_1': '',
-                'amount_column_2': expense[0]
+                'amount_column_2': format(expense[0], '.2f')
 
             }
         )
@@ -304,7 +303,7 @@ class AccHelper():
                 {
                     'title': '<b>Net Income</b>',
                     'amount_column_1': '',
-                    'amount_column_2': '<b>'+str(net_income)+'<b>'
+                    'amount_column_2': '<b>'+str(format(net_income, '.2f'))+'<b>'
 
                 }
             )
@@ -387,6 +386,71 @@ class AccHelper():
 
                 }
             )
+
+    #get heads except parents
+    def get_heads(user):
+        #get all distinct parent heads
+        parent_heads = Head.objects.filter(user=user).distinct().values_list('parent_head_code',flat=True)
+        p_heads = []
+        for head in parent_heads:
+            p_heads.append(head)
+        #get all kids heads
+        kids_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=p_heads),~Q(head_code__in=p_heads)).order_by('name').values('id','name')
+        return kids_heads
+
+    #generate ledger statement
+    def generate_ledger_statement(user,head_id,month_year):
+        # get request month last day
+        month_year_part = month_year.split('-')
+        last_day = monthrange(int(month_year_part[0]), int(month_year_part[1]))
+        date_q = month_year + '-' + str(last_day[1])
+
+        # get unique transactions
+        unique_transactions = TransactionDetails.objects.select_related('transaction').filter(
+            Q(transaction__transaction_date__lte=date_q),
+            Q(account_head_id=head_id)
+        ).values_list('transaction_id', flat=True)
+
+        # get transactions
+        transactions = TransactionDetails.objects.select_related('transaction').filter(
+            Q(transaction_id__in=unique_transactions),
+            ~Q(account_head_id=head_id)
+        ).select_related('account_head').order_by('-transaction__transaction_date')
+
+        head = Head.objects.filter(id=head_id).first()
+        total = 0
+        ledger_content = []
+        for transaction in transactions:
+            dr_amount = ''
+            cr_amount = ''
+            if AccHelper.detect_account_type(head.type) == AccConstant.DEBIT:
+                if transaction.position == AccConstant.DEBIT:
+                    total = total - transaction.amount
+                    dr_amount = transaction.amount
+                else:
+                    total = total + transaction.amount
+                    cr_amount = transaction.amount
+            else:
+                if transaction.position == AccConstant.CREDIT:
+                    total = total - transaction.amount
+                    cr_amount = transaction.amount
+                else:
+                    total = total + transaction.amount
+                    dr_amount = transaction.amount
+
+            ledger_content.append(
+                {
+                    'transection_id' : transaction.transaction.id,
+                    'date' : transaction.transaction.transaction_date,
+                    'title' : transaction.account_head.name+'('+str(transaction.account_head.head_code)+')',
+                    'voucher' : transaction.transaction.voucher_number,
+                    'dr_amount' : dr_amount,
+                    'cr_amount' : cr_amount,
+                    'balance' : total
+                }
+            )
+
+        return ledger_content
 
 
 class AccConstant():

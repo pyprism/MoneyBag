@@ -13,7 +13,7 @@ import json
 from num2words import num2words
 from dateutil.relativedelta import relativedelta
 from pprint import pprint
-
+from collections import OrderedDict
 
 @login_required
 def add_ledger_head(request):
@@ -204,7 +204,7 @@ def transaction_statement(request):
         transaction__transaction_date__range=[date_from,date_to]
     ).select_related('account_head').order_by('-transaction__transaction_date','-position')
 
-    trans_statements = dict()
+    trans_statements = OrderedDict()
     for transaction in transactions:
         if transaction.position == AccConstant.DEBIT:
             voucher_type = 'Debited'
@@ -236,3 +236,21 @@ def income_statement(request):
     income_statements = AccHelper.generate_income_statement(request.user,month_year)
     context = {'month_year': datetime.strptime(month_year,'%Y-%m'), 'income_statements': income_statements}
     return render(request, 'accounting/report/income-statements.html',context)
+
+
+@login_required
+def ledger_statement(request):
+    month_year = request.GET.get('monthYear', False)
+    head_id = request.GET.get('head_id', False)
+    if not month_year:
+        current_date = datetime.today()
+        month_year = current_date.strftime('%Y-%m')
+    if not head_id:
+        cash_head = AccountHead.objects.filter(user=request.user, parent_head_code=AccConstant.ACC_HEAD_CASH).first()
+        head_id = cash_head.id
+
+    heads = AccHelper.get_heads(request.user)
+    ledger_statements = AccHelper.generate_ledger_statement(request.user, head_id, month_year)
+
+    context = {'heads':heads, 'head_id':int(head_id), 'month_year': datetime.strptime(month_year,'%Y-%m'), 'ledger_statements': ledger_statements}
+    return render(request, 'accounting/report/ledger-statements.html',context)

@@ -34,7 +34,7 @@
                             <div class="row">
                                     <div class="col-xs-12">
                                         <div class="description">
-                                            {% if voucher_info.voucher_type == 5 and voucher_info.voucher_type == 6 %}
+                                            {% if voucher_info.voucher_type == 5 or voucher_info.voucher_type == 6 %}
                                             <p class="desc-text">Being The Amount Paid In : <span class="bold-dash">{{ opsite_transaction.account_head.name }}</span></p>
                                             <p class="desc-text">{% if voucher_info.voucher_type == 5 %} To {% elif voucher_info.voucher_type == 6 %} From {% endif %}: <span class="bold-dash">{{ transaction.account_head.name }}</span> </p>
                                             {% else %}

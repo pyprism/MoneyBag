@@ -8093,4 +8093,7 @@ p {
      padding: 0 !important;
      margin: 0 !important;
    }
+   a[href]:after {
+    content: none !important;
+  }
 }
