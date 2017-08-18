@@ -1,0 +1,102 @@
+{% extends "base/backend_master.html" %}
+
+{% block title %} Ledger Statement {% endblock %}
+
+{% block childPage %}
+    <section class="content print-body">
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header" style="min-height: 75px;">
+                            <h2 class="pull-left">Ledger statement <i><span id="headName"></span></i> for {{ month_year | date:"F,Y" }}</h2>
+                            <button type="button" class="btn btn-default btn-circle-lg waves-effect waves-circle waves-float btnPrint pull-right no-print" style="top:-10px;">
+                                <i class="material-icons">print</i>
+                            </button>
+                        </div>
+                        <div class="body">
+                            <div class="row no-print">
+                                <form method="GET" action="{% url 'report.ledger' %}" enctype="multipart/form-data">
+                                    <div class="col-md-8">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <select class="form-control myselect" name="head_id" required>
+                                                    <option value="">-- Please select --</option>
+                                                    {% for head in heads %}
+                                                        <option value="{{ head.id }}" {% if head.id == head_id %} selected {% endif %} >{{ head.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="help-info">Heads</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" value="{{ month_year | date:"Y-m"}}" class="datepicker3 form-control" placeholder="Please choose a month..." name="monthYear" required>
+                                            </div>
+                                            <div class="help-info">Month</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button class="btn btn-circle-lg btn-primary waves-effect" type="submit">GET</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered ptable">
+                                        <thead>
+                                        <th width="5%" style="text-align: center;">SL</th>
+                                        <th width="10%" style="text-align: center;">Date</th>
+                                        <th width="30%" style="text-align: center;">Title</th>
+                                        <th width="10%" style="text-align: center;">Voucher</th>
+                                        <th width="15%" style="text-align: center;">Credit (TK.)</th>
+                                        <th width="15%" style="text-align: center;">Debit (TK.)</th>
+                                        <th width="15%" style="text-align: center;">Balance (TK.)</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for transaction in ledger_statements %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ transaction.date | date:'d/m/Y' }}</td>
+                                                <td>
+                                                    {{ transaction.title }}
+                                                </td>
+                                                <td>
+                                                    <a target="_blank" class="link" href="{% url 'voucher.details' transaction.transection_id %}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details"  >{{ transaction.voucher }}</a>
+
+                                                </td>
+                                                <td>
+                                                    {{ transaction.cr_amount |floatformat:2 }}
+                                                </td>
+                                                <td>
+                                                    {{ transaction.dr_amount |floatformat:2 }}
+                                                </td>
+                                                <td>
+                                                    {{ transaction.balance |floatformat:2  }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+<!-- child page js -->
+{% block child_page_js %}
+    <script>
+        jQuery(document).ready(function() {
+            $('#headName').text("'"+$('select[name="head_id"] option:selected').text()+"'");
+        });
+    </script>
+{% endblock %}

@@ -70,8 +70,8 @@
                                                     {{ transaction.0.type }}
                                                 </td>
                                                 <td>
-                                                    TK. {{ transaction.0.description.0 }}<br>
-                                                    TK. {{ transaction.0.description.1 }}<br>
+                                                    TK. {{ transaction.0.description.0|floatformat:2 }}<br>
+                                                    TK. {{ transaction.0.description.1|floatformat:2 }}<br>
                                                 </td>
                                                 <td class="no-print">
                                                     <a target="_blank" class="btn bg-green btn-circle waves-effect waves-circle waves-float" href="{% url 'voucher.details' key %}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Details"  > <i class="material-icons">event_note</i></a>

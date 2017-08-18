@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^voucher-details/(?P<voucher_id>\d+)/$', views.voucher_details, name='voucher.details'),
     url(r'^report/transaction-statement/$', views.transaction_statement, name='report.transactions'),
     url(r'^report/income-statement/$', views.income_statement, name='report.incomes'),
+    url(r'^report/ledger-statement/$', views.ledger_statement, name='report.ledger'),
 
 ]

@@ -50,7 +50,7 @@
                                                     {{ transaction.title | safe }}
                                                 </td>
                                                 <td style="text-align: center" >
-                                                    {{ transaction.amount_column_1 }}
+                                                    {{ transaction.amount_column_1|floatformat:2 }}
                                                 </td>
                                                 <td style="text-align: center" >
                                                     {{ transaction.amount_column_2 | safe }}
