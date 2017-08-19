@@ -8075,6 +8075,19 @@ p {
 .border-1px{
   border: solid 1px #000000;
 }
+.width-full{
+  width:100%;
+}
+.dashboard-widget .info-box{
+  margin-bottom: 20px;
+}
+.info-box .content .text {
+    font-size: 16px;
+    margin-top: 5px;
+}
+.info-box .icon i {
+    line-height: 65px;
+}
 
 @media (max-width: 767px) {
 
