@@ -7,8 +7,8 @@ This app helps to manage finance according to Chart Of Accounts
 wip
 
 # screenshots
-<img src="screenshots/signup.png">
-<img src="screenshots/signin.png">
+<img src="screenshots/singup.png">
+<img src="screenshots/login.png">
 <img src="screenshots/dashboard.png">
 <img src="screenshots/ledger-head.png">
 <img src="screenshots/payment-head.png">
