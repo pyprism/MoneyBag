@@ -1,11 +1,11 @@
 {% extends "base/backend_master.html" %}
 
 {% block title %} Dashboard {% endblock %}
-
+ {% load humanize %}
 {% block childPage %}
     <section class="content">
         <div class="container-fluid dashboard-widget">
-          <!-- Widgets -->
+            <!-- Widgets -->
             <div class="row clearfix">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="info-box bg-green hover-expand-effect">
@@ -14,7 +14,7 @@
                         </div>
                         <div class="content width-full">
                             <div class="text">Income</div>
-                            <div class="number count-to text-right" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.total_income }}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                         </div>
                         <div class="content width-full">
                             <div class="text">Expense</div>
-                            <div class="number count-to text-right" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.total_expense}}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -36,12 +36,12 @@
                         </div>
                         <div class="content width-full">
                             <div class="text">Balance</div>
-                            <div class="number count-to text-right" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.balance }}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
             </div>
-             <div class="row clearfix">
+            <div class="row clearfix">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="info-box bg-red hover-expand-effect">
                         <div class="icon">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="content width-full">
                             <div class="text">Payable</div>
-                            <div class="number count-to text-right" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.total_payable }}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="content width-full">
                             <div class="text">Receivable</div>
-                            <div class="number count-to text-right" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.total_receivable }}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -70,8 +70,8 @@
                             <i class="material-icons">&#2547;</i>
                         </div>
                         <div class="content width-full">
-                            <div class="text">Repayable/Admissible</div>
-                            <div class="number count-to text-right" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="text">{% if meta_data.rp_or_adm < 0 %}Repayable{% else %}Admissible{% endif %}</div>
+                            <div class="number count-to text-right" data-from="0" data-to="{{ meta_data.rp_or_adm|stringformat:"+d"|slice:"1:" }}" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -81,46 +81,98 @@
                 <!-- Visitors -->
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <div class="card">
-                        <div class="body bg-light-blue">
-                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
-                                 data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
-                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
+                        <div class="body">
+                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(0, 0, 0)" data-highlight-Line-Color="#000"
+                                 data-min-Spot-Color="rgb(233, 30, 99)" data-max-Spot-Color="rgb(0, 188, 212)" data-spot-Color="rgb(255,255,255)"
+                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(244, 67, 54, 1)"
                                  data-fill-Color="rgba(0, 188, 212, 0)">
-                                145582,126582,26582,3872,1200
+                                {% if today.expense %}{{ today.expense }}{% else %}0.00{% endif %},{% if yester_day.expense %}{{ yester_day.expense }}{% else %}0.00{% endif %},{% if this_week.expense %}{{ this_week.expense }}{% else %}0.00{% endif %},{% if last_week.expense %}{{ last_week.expense }}{% else %}0.00{% endif %},{% if this_month.expense %}{{ this_month.expense }}{% else %}0.00{% endif %},{% if last_month.expense %}{{ last_month.expense }}{% else %}0.00{% endif %}
                             </div>
-                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(233, 30, 99)" data-highlight-Line-Color="#fff"
-                                 data-min-Spot-Color="rgb(255,255,255)" data-max-Spot-Color="rgb(255,255,255)" data-spot-Color="rgb(255,255,255)"
-                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(255,255,255,0.7)"
+                            <div class="sparkline" data-type="line" data-spot-Radius="6" data-highlight-Spot-Color="rgb(0, 0, 0)" data-highlight-Line-Color="#000"
+                                 data-min-Spot-Color="rgb(233, 30, 99)" data-max-Spot-Color="rgb(0, 188, 212)" data-spot-Color="rgb(255,255,255)"
+                                 data-offset="90" data-width="100%" data-height="46px" data-line-Width="2" data-line-Color="rgba(76, 175, 80, 1)"
                                  data-fill-Color="rgba(0, 188, 212, 0)">
-                                147441,152455,55575,2465,0.00
+                              {% if today.income %}{{ today.income }}{% else %}0.00{% endif %},{% if yester_day.income %}{{ yester_day.income }}{% else %}0.00{% endif %},{% if this_week.income %}{{ this_week.income }}{% else %}0.00{% endif %},{% if last_week.income %}{{ last_week.income }}{% else %}0.00{% endif %},{% if this_month.income %}{{ this_month.income }}{% else %}0.00{% endif %},{% if last_month.income %}{{ last_month.income }}{% else %}0.00{% endif %}
                             </div>
                             <ul class="dashboard-stat-list">
                                 <li>
-                                    TODAY&nbsp;
-&nbsp;                                    <span class="pull-right"><span>1,200</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">0.00</span> <span class="font-15">&#2547;</span></span>
+                                    <span>TODAY</span>
+                                    <span class="pull-right">
+                                        <i class="pink">
+                                            {% if today.expense %}{{ today.expense|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if today.income %}{{ today.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
                                 </li>
                                 <li>
-                                    YESTERDAY
-                                    <span class="pull-right"><span>3,872</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">2,465</span> <span class="font-15">&#2547;</span></span>
+                                   <span>YESTERDAY</span>
+                                     <span class="pull-right">
+                                        <i class="pink">
+                                            {% if yester_day.expense %}{{ yester_day.expense|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if yester_day.income %}{{ yester_day.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
                                 </li>
                                 <li>
-                                    LAST WEEK
-                                    <span class="pull-right"><span>26,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">55,575</span> <span class="font-15">&#2547;</span></span>
+                                   <span>THIS WEEK</span>
+                                     <span class="pull-right">
+                                        <i class="pink">
+                                            {% if this_week.expense %}{{ this_week.expense|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if this_week.income %}{{ this_week.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
                                 </li>
                                 <li>
-                                    THIS MONTH
-                                    <span class="pull-right"><span>1,26,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">1,52,455</span> <span class="font-15">&#2547;</span></span>
+                                   <span>LAST WEEK</span>
+                                     <span class="pull-right">
+                                        <i class="pink">
+                                            {% if last_week.expense %}{{ last_week.expense|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if last_week.income %}{{ last_week.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
                                 </li>
                                 <li>
-                                    LAST MONTH
-                                    <span class="pull-right"><span>1,45,582</span><span class="font-25 red">&nbsp;/&nbsp;</span><span class="text-black">1,47,441</span> <span class="font-15">&#2547;</span></span>
+                                    <span>THIS MONTH</span>
+                                    <span class="pull-right">
+                                        <i class="pink">
+                                            {% if this_month.expense %}{{ this_month.expense|floatformat:2|intcomma }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if this_month.income %}{{ this_month.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>LAST MONTH</span>
+                                    <span class="pull-right">
+                                        <i class="pink">
+                                            {% if last_month.expense %}{{ last_month.expense|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                        <i class="black">&nbsp&#2547;&nbsp;</i>
+                                        <i class="green">
+                                            {% if last_month.income %}{{ last_month.income|floatformat:2|intcomma  }}{% else %}0.00{% endif %}
+                                        </i>
+                                    </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <!-- #END# Visitors -->
-                    <!-- section Usage -->
+                <!-- section Usage -->
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <div class="card">
                         <div class="header">
@@ -131,7 +183,7 @@
                                         <i class="material-icons">more_vert</i>
                                     </a>
                                     <ul class="dropdown-menu pull-right">
-                                        <li><a href="javascript:void(0);">Details</a></li>
+                                        <li><a href="{% url 'report.ledger' %}">Details</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -153,12 +205,13 @@
 {% endblock %}
 {% load staticfiles %}
 {% block child_page_js %}
-      <script src="{% static 'js/index.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
     <!-- Demo Js -->
     <script src="{% static 'js/demo.js' %}"></script>
     <script>
         $( document ).ready(function() {
-
+            var donutData = JSON.parse('{{ donut_chart_data | safe }}');
+            initDonutChart(donutData);
         });
     </script>
 {% endblock %}

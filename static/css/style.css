@@ -8040,12 +8040,30 @@ html.ie11 .dropdown-menu ul.menu li a {
 html.ie11 .bs-searchbox .form-control {
   width: 90%; }
 .red {
-  color: #F44336; }
+  color: #f91808;
+}
+.green {
+  color: #4caf50;
+}
+.pink {
+  color: #F44336;
+}
+.cyan {
+  color: rgb(0, 188, 212);
+}
 .text-black {
   color: #000000;
 }
 .report-title{
   text-align: center;
+}
+.dashboard-stat-list li {
+     padding: 0;
+     padding-top: 3px;
+    font-size: 20px;
+}
+.dashboard-stat-list li span{
+     display: inline;
 }
 .round-title{
   border-radius: 30px;

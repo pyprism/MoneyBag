@@ -1,12 +1,13 @@
-from .models import AccountHead as Head
+from .models import AccountHead as Head,Transaction,TransactionDetails,DashboardMeta
 from django.db.models import Q
-from .models import Transaction,TransactionDetails
 from django.db import IntegrityError,transaction
 import random
 import string
 from calendar import monthrange
 from pprint import pprint
 from decimal import Decimal
+from django.db.models import Sum
+
 
 '''
 This file has all helper method that need by accounting module
@@ -51,6 +52,124 @@ class AccHelper():
             Head(user=new_user, parent_head_code=5, name="General Expenditure", type="exp", head_code=29, ledger_head_code=""),
             Head(user=new_user, parent_head_code=17, name="Forbidden Adjustment", type="inc", head_code=30, ledger_head_code=""),
         ])
+
+    def add_dashboard_metas(new_user):
+        DashboardMeta.objects.bulk_create([
+            DashboardMeta(user=new_user,meta_key='total_income',meta_value='0'),
+            DashboardMeta(user=new_user,meta_key='total_expense',meta_value='0'),
+            DashboardMeta(user=new_user,meta_key='total_payable',meta_value='0'),
+            DashboardMeta(user=new_user,meta_key='total_receivable',meta_value='0')
+        ])
+
+    def get_meta_data(user):
+        metas = DashboardMeta.objects.filter(user=user).values('meta_key','meta_value')
+        meta_data = dict()
+        for meta in metas:
+            meta_data[meta['meta_key']] = Decimal(meta['meta_value'])
+        return meta_data
+
+    #get dashbaord expense chart data
+    def get_expenses(user):
+
+        service_heads = Head.objects.filter(user=user,
+                                                   parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
+        first_class_heads = Head.objects.filter(Q(user=user),
+                                           Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(
+                                               parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(
+                                               parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),
+                                           ~Q(id=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE),
+                                           ~Q(id=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE))
+
+        heads = []
+        for head in service_heads:
+            heads.append({
+               'id' : head.id,
+               'name' : head.name,
+            })
+
+        for head in first_class_heads:
+            heads.append({
+               'id' : head.id,
+               'name' : head.name,
+            })
+
+        expenses = []
+        total = Decimal(0.00)
+        for head in heads:
+            # get transactions
+            transaction = TransactionDetails.objects.filter(account_head_id=head['id'],position=AccConstant.DEBIT).aggregate(total=Sum('amount'))
+            if transaction['total']:
+                expenses.append({
+                    'name' : head['name'],
+                    'total' : transaction['total']
+                })
+                total += transaction['total']
+        chart_data = []
+        for expense in expenses:
+            chart_data.append({
+                'label' : expense['name'],
+                'value' : round(((expense['total']*100)/total),2)
+            })
+
+
+        return chart_data
+
+    #get dashabord date range income expense
+    def get_income_expense_in_range(user,date_from,date_to):
+        #get incomes
+        #income heads
+        service_heads = Head.objects.filter(user=user,
+                                                   parent_head_code=AccConstant.ACC_HEAD_SERVICE_REVENUE)
+        first_class_heads = Head.objects.filter(Q(user=user),
+                                           Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_INCOMES) | Q(
+                                               parent_head_code=AccConstant.ACC_HEAD_LOAN),
+                                           ~Q(id=AccConstant.ACC_HEAD_SERVICE_REVENUE))
+
+        heads = []
+        for head in service_heads:
+            heads.append(head.id)
+
+        for head in first_class_heads:
+            heads.append(head.id)
+
+        # get transactions
+        income = TransactionDetails.objects.select_related('transaction').filter(
+            Q(transaction__transaction_date__range=[date_from,date_to]),
+            Q(account_head_id__in=heads),
+            Q(position=AccConstant.CREDIT)
+        ).aggregate(total=Sum('amount'))
+
+        # get expenses
+        # expense heads
+        service_heads = Head.objects.filter(user=user,
+                                            parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
+        first_class_heads = Head.objects.filter(Q(user=user),
+                                                Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(
+                                                    parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(
+                                                    parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),
+                                                ~Q(id=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE),
+                                                ~Q(id=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE))
+        heads = []
+        for head in service_heads:
+            heads.append(head.id)
+
+        for head in first_class_heads:
+            heads.append(head.id)
+
+        # get transactions
+        expense = TransactionDetails.objects.select_related('transaction').filter(
+            Q(transaction__transaction_date__range=[date_from, date_to]),
+            Q(account_head_id__in=heads),
+            Q(position=AccConstant.DEBIT)
+        ).aggregate(total=Sum('amount'))
+
+        return {
+            'income' : income['total'],
+            'expense' : expense['total'],
+        }
+
+
+
 
     def get_all_group_heads(user,head_types=None):
         if head_types:
@@ -150,6 +269,11 @@ class AccHelper():
                            payment_methods_amount[index]
                        )
                        voucher_id = trans_id
+
+                       dashboard_meta = DashboardMeta.objects.filter(user=request.user,meta_key='total_income').first()
+                       dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value)+Decimal(payment_methods_amount[index])
+                       dashboard_meta.save()
+
                elif voucher_type == AccConstant.VOUCHER_PAYMENT:
                    for index, item in enumerate(payment_methods):
                        note = None
@@ -176,6 +300,11 @@ class AccHelper():
                            payment_methods_amount[index]
                        )
                        voucher_id = trans_id
+
+                       dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_expense').first()
+                       dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) + Decimal(
+                           payment_methods_amount[index])
+                       dashboard_meta.save()
            except IntegrityError:
                return False
 
@@ -212,8 +341,15 @@ class AccHelper():
     #get child heads
     def get_all_child_heads(user):
         parent_heads = Head.objects.filter(user=user).values_list('parent_head_code',flat=True).distinct()
-        child_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=parent_heads),~Q(head_code__in=parent_heads)).order_by('name').values_list('id','name')
-        return child_heads
+        child_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=parent_heads),~Q(head_code__in=parent_heads)).order_by('name').values_list('id','name','parent_head_code')
+        heads = []
+        for head in child_heads:
+            parent_head = Head.objects.filter(user=user,head_code=head[2]).first()
+            heads.append([
+                head[0],
+                head[1]+'('+parent_head.name+')',
+            ])
+        return heads
 
     #get voucher full name
     def get_voucher_type_name(type):
