@@ -8040,12 +8040,30 @@ html.ie11 .dropdown-menu ul.menu li a {
 html.ie11 .bs-searchbox .form-control {
   width: 90%; }
 .red {
-  color: #F44336; }
+  color: #f91808;
+}
+.green {
+  color: #4caf50;
+}
+.pink {
+  color: #F44336;
+}
+.cyan {
+  color: rgb(0, 188, 212);
+}
 .text-black {
   color: #000000;
 }
 .report-title{
   text-align: center;
+}
+.dashboard-stat-list li {
+     padding: 0;
+     padding-top: 3px;
+    font-size: 20px;
+}
+.dashboard-stat-list li span{
+     display: inline;
 }
 .round-title{
   border-radius: 30px;
@@ -8074,6 +8092,19 @@ p {
 }
 .border-1px{
   border: solid 1px #000000;
+}
+.width-full{
+  width:100%;
+}
+.dashboard-widget .info-box{
+  margin-bottom: 20px;
+}
+.info-box .content .text {
+    font-size: 16px;
+    margin-top: 5px;
+}
+.info-box .icon i {
+    line-height: 65px;
 }
 
 @media (max-width: 767px) {

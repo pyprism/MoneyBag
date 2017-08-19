@@ -7,12 +7,12 @@ from random import randint
 from time import time
 from datetime import datetime
 from django.http import JsonResponse
-from .models import AccountHead, Transaction, TransactionDetails
+from .models import AccountHead, Transaction, TransactionDetails, DashboardMeta
 from django.db.models import Q
 import json
 from num2words import num2words
 from dateutil.relativedelta import relativedelta
-from pprint import pprint
+from decimal import Decimal
 from collections import OrderedDict
 
 @login_required
@@ -167,6 +167,31 @@ def acc_voucher_add(request,voucher_type):
                AccConstant.CREDIT,
                request.POST.get('amount')
            )
+           #for dashbaord meta data payable and receivable
+           dr_head = request.POST.get('debit_head')
+           cr_head = request.POST.get('credit_head')
+           dr_head_info = AccountHead.objects.filter(user=request.user,id=dr_head).first()
+           if int(dr_head_info.parent_head_code)==AccConstant.ACC_HEAD_PAYABLE:
+               dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_payable').first()
+               dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) - Decimal(request.POST.get('amount'))
+               dashboard_meta.save()
+           elif int(dr_head_info.parent_head_code)==AccConstant.ACC_HEAD_RECEIVABLE:
+               dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_receivable').first()
+               dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) + Decimal(request.POST.get('amount'))
+               dashboard_meta.save()
+
+           cr_head_info = AccountHead.objects.filter(user=request.user, id=cr_head).first()
+           if int(cr_head_info.parent_head_code) == AccConstant.ACC_HEAD_PAYABLE:
+               dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_payable').first()
+               dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) + Decimal(request.POST.get('amount'))
+               dashboard_meta.save()
+           elif int(cr_head_info.parent_head_code) == AccConstant.ACC_HEAD_RECEIVABLE:
+               dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_receivable').first()
+               dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) - Decimal(request.POST.get('amount'))
+               dashboard_meta.save()
+
+
+
            messages.info(request, 'Voucher has been added.')
 
         else:

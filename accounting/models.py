@@ -68,3 +68,11 @@ class TransactionDetails(models.Model):
     class Meta:
         db_table = 'accounting_transaction_details'
 
+
+class DashboardMeta(models.Model):
+    meta_key = models.CharField(max_length=255)
+    meta_value = models.TextField()
+    user = models.ForeignKey(User,on_delete=models.PROTECT)
+
+    class Meta:
+        db_table = 'accounting_dashboard_meta'

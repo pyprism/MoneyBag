@@ -1,15 +1,12 @@
 ﻿$(function () {
     //Widgets count
-    $('.count-to').countTo();
-
-    //Sales count to
-    $('.sales-count-to').countTo({
+    $('.count-to').countTo({
+         decimals: 2,
         formatter: function (value, options) {
-            return '$' + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, ' ').replace('.', ',');
+            return value.toLocaleString();
         }
     });
-
-    initDonutChart();
+    // initDonutChart();
     initSparkline();
 });
 
@@ -21,26 +18,10 @@ function initSparkline() {
     });
 }
 
-function initDonutChart() {
+function initDonutChart(data) {
     Morris.Donut({
         element: 'donut_chart',
-        data: [{
-            label: 'Rent',
-            value: 37
-        }, {
-            label: 'Tuition Fee',
-            value: 30
-        }, {
-            label: 'Food',
-            value: 18
-        }, {
-            label: 'Transport',
-            value: 12
-        },
-        {
-            label: 'Utility',
-            value: 3
-        }],
+        data: data,
         colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'],
         formatter: function (y) {
             return y + '%'
