@@ -7,5 +7,16 @@ This app helps to manage finance according to Chart Of Accounts
 wip
 
 # screenshots
+<img src="screenshots/signup.png">
+<img src="screenshots/signin.png">
 <img src="screenshots/dashboard.png">
+<img src="screenshots/ledger-head.png">
+<img src="screenshots/payment-head.png">
 <img src="screenshots/heads-tree.png">
+<img src="screenshots/heads-edit.png">
+<img src="screenshots/recipt.png">
+<img src="screenshots/journal.png">
+<img src="screenshots/voucher.png">
+<img src="screenshots/transaction.png">
+<img src="screenshots/income.png">
+<img src="screenshots/ledger.png">
