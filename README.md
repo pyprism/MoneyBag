@@ -6,6 +6,9 @@ This app helps to manage finance according to Chart Of Accounts
 # Status
 wip
 
+# Dependency
+sudo apt-get install libffi-dev python3-dev
+
 # screenshots
 <img src="screenshots/singup.png">
 <img src="screenshots/login.png">
