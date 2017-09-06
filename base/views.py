@@ -10,6 +10,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime, timedelta,date
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
+from accounting.MBCryptr import MBCryptr
+from accounting.decorator import unlock_required
 
 def login(request):
     """
@@ -18,7 +20,7 @@ def login(request):
     :return:
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('unlock')
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -26,13 +28,37 @@ def login(request):
         if user:
             auth.login(request, user)
             messages.info(request,'Welcome, Login successfull!')
-            return redirect('dashboard')
+            return redirect('unlock')
         else:
             messages.error(request, 'Username/Password is not valid!')
             return redirect('/')
     else:
         return render(request, 'base/login.html')
 
+@login_required
+def unlock(request):
+    """
+        Handles unlock encrypted box with master password
+        :param request:
+        :return:
+        """
+    if request.method == "POST":
+        master_password = request.POST.get('master_password',False)
+        if master_password and len(master_password)>=8:
+            en_key = AccHelper.is_mpass_valid(request.user,master_password)
+            if en_key:
+                request.session['en_key'] = en_key.decode('utf-8')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Master Password is not correct, try again!')
+        else:
+            messages.error(request, 'Master Password is not valid!')
+        return redirect('unlock')
+    else:
+        if 'en_key' in request.session:
+            return redirect('dashboard')
+
+        return render(request, 'base/unlock.html')
 
 def register(request):
     """
@@ -46,7 +72,17 @@ def register(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+        master_password = request.POST.get('master_password')
         email = request.POST.get('email')
+
+        if password == master_password:
+            messages.error(request, "login password and master password can't be same!!!")
+            return redirect('register')
+
+        if len(master_password)<8:
+            messages.error(request, "Master password must be strong and minimum 10 letter long!")
+            return redirect('register')
+
         if password == confirm_password:
             user_exists = User.objects.filter(email=email)
             if user_exists:
@@ -58,8 +94,10 @@ def register(request):
                         user = User.objects.create_user(username=username,
                                                         email=email,
                                                         password=password)
-                        AccHelper.create_all_basic_acc_heads(user)
-                        AccHelper.add_dashboard_metas(user)
+                        #call encryptr class and get key
+                        en_key = MBCryptr.build_key_from_password(master_password)
+                        AccHelper.create_all_basic_acc_heads(user,en_key)
+                        AccHelper.add_dashboard_metas(user,en_key)
                         return render(request, 'base/thanks.html')
                     except IntegrityError:
                         messages.error(request, "Internal error! Contact with support.")
@@ -72,7 +110,10 @@ def register(request):
         return render(request, 'base/sign_up.html')
 
 @login_required
+@unlock_required
 def dashboard(request):
+    print('i am in dashboard')
+    return render(request, 'base/login.html')
     meta_data = AccHelper.get_meta_data(request.user)
     meta_data['balance'] = meta_data['total_income'] - meta_data['total_expense']
     meta_data['rp_or_adm'] = meta_data['total_receivable'] - meta_data['total_payable']

@@ -7,7 +7,7 @@ from calendar import monthrange
 from pprint import pprint
 from decimal import Decimal
 from django.db.models import Sum
-
+from .MBCryptr import MBCryptr
 
 '''
 This file has all helper method that need by accounting module
@@ -19,46 +19,55 @@ class AccHelper():
     operation.
     '''
 
-    def create_all_basic_acc_heads(new_user):
+    def create_all_basic_acc_heads(new_user,en_key):
+
         Head.objects.bulk_create([
-            Head(user=new_user, parent_head_code=0, name="Branch / Divisions", type="ast", head_code=1, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Capital Account", type="oe", head_code=2, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Current Liabilities", type="lib", head_code=3, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Current Assets", type="ast", head_code=4, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Direct Expenses", type="exp", head_code=5, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Direct Incomes", type="inc", head_code=6, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Fixed Assets", type="ast", head_code=7, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Indirect Expenses", type="exp", head_code=8, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Indirect Incomes", type="inc", head_code=9, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Investments", type="ast", head_code=10, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Suspense A/c", type="ast", head_code=11, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=0, name="Loan Account", type="lib", head_code=12, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=4, name="Stock", type="ast", head_code=13, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=7, name="Property and Equipment", type="ast", head_code=14, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=3, name="Payables", type="lib", head_code=15, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=4, name="Receivables", type="ast", head_code=16, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=6, name="Service Revenue", type="inc", head_code=17, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=5, name="Service Expenditure", type="exp", head_code=18, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=4, name="Cash at Hand", type="ast", head_code=19, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=4, name="Banks", type="ast", head_code=20, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=19, name="Cash", type="ast", head_code=21, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=6, name="Sales Revenue", type="inc", head_code=22, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=5, name="Cost of Goods Sold", type="exp", head_code=23, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=4, name="Mobile Banking", type="ast", head_code=24, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=3, name="Vat account", type="lib", head_code=25, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=5, name="Sales Discount", type="exp", head_code=26, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=6, name="Income Statement Summary", type="inc", head_code=27, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=6, name="General Revenue", type="inc", head_code=28, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=5, name="General Expenditure", type="exp", head_code=29, ledger_head_code=""),
-            Head(user=new_user, parent_head_code=17, name="Forbidden Adjustment", type="inc", head_code=30, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Branch / Divisions"), type="ast", head_code=1, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Capital Account"), type="oe", head_code=2, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Current Liabilities"), type="lib", head_code=3, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Current Assets"), type="ast", head_code=4, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Direct Expenses"), type="exp", head_code=5, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Direct Incomes"), type="inc", head_code=6, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Fixed Assets"), type="ast", head_code=7, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Indirect Expenses"), type="exp", head_code=8, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Indirect Incomes"), type="inc", head_code=9, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Investments"), type="ast", head_code=10, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Suspense A/c"), type="ast", head_code=11, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=0, name=MBCryptr.encrypt(en_key,"Loan Account"), type="lib", head_code=12, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=4, name=MBCryptr.encrypt(en_key,"Stock"), type="ast", head_code=13, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=7, name=MBCryptr.encrypt(en_key,"Property and Equipment"), type="ast", head_code=14, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=3, name=MBCryptr.encrypt(en_key,"Payables"), type="lib", head_code=15, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=4, name=MBCryptr.encrypt(en_key,"Receivables"), type="ast", head_code=16, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=6, name=MBCryptr.encrypt(en_key,"Service Revenue"), type="inc", head_code=17, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=5, name=MBCryptr.encrypt(en_key,"Service Expenditure"), type="exp", head_code=18, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=4, name=MBCryptr.encrypt(en_key,"Cash at Hand"), type="ast", head_code=19, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=4, name=MBCryptr.encrypt(en_key,"Banks"), type="ast", head_code=20, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=19, name=MBCryptr.encrypt(en_key,"Cash"), type="ast", head_code=21, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=6, name=MBCryptr.encrypt(en_key,"Sales Revenue"), type="inc", head_code=22, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=5, name=MBCryptr.encrypt(en_key,"Cost of Goods Sold"), type="exp", head_code=23, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=4, name=MBCryptr.encrypt(en_key,"Mobile Banking"), type="ast", head_code=24, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=3, name=MBCryptr.encrypt(en_key,"Vat account"), type="lib", head_code=25, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=5, name=MBCryptr.encrypt(en_key,"Sales Discount"), type="exp", head_code=26, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=6, name=MBCryptr.encrypt(en_key,"Income Statement Summary"), type="inc", head_code=27, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=6, name=MBCryptr.encrypt(en_key,"General Revenue"), type="inc", head_code=28, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=5, name=MBCryptr.encrypt(en_key,"General Expenditure"), type="exp", head_code=29, ledger_head_code=""),
+            Head(user=new_user, parent_head_code=17, name=MBCryptr.encrypt(en_key,"Forbidden Adjustment"), type="inc", head_code=30, ledger_head_code=""),
         ])
 
-    def add_dashboard_metas(new_user):
+    def is_mpass_valid(user,master_pass):
+        en_key = MBCryptr.build_key_from_password(master_pass)
+        cash_head = Head.objects.filter(user=user,parent_head_code=AccConstant.ACC_HEAD_CASH).first()
+        # print('=====>',MBCryptr.decrypt(en_key,cash_head.name))
+        if MBCryptr.decrypt(en_key,cash_head.name) == "Cash".encode('utf-8'):
+            return en_key
+        return False
+
+    def add_dashboard_metas(new_user,en_key):
         DashboardMeta.objects.bulk_create([
-            DashboardMeta(user=new_user,meta_key='total_income',meta_value='0'),
-            DashboardMeta(user=new_user,meta_key='total_expense',meta_value='0'),
-            DashboardMeta(user=new_user,meta_key='total_payable',meta_value='0'),
-            DashboardMeta(user=new_user,meta_key='total_receivable',meta_value='0')
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_income'),meta_value='0'),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_expense'),meta_value='0'),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_payable'),meta_value='0'),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_receivable'),meta_value='0')
         ])
 
     def get_meta_data(user):
