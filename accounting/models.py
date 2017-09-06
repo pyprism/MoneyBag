@@ -13,7 +13,7 @@ class AccountHead(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     parent_head_code = models.IntegerField(null=True, blank=True)
-    name = models.CharField(max_length=400, blank=True)
+    name = models.TextField()
     type = models.CharField(choices=HEAD_TYPES, max_length=5, blank=True)
     head_code = models.IntegerField()
     ledger_head_code = models.CharField(max_length=255, blank=True)
@@ -62,7 +62,7 @@ class TransactionDetails(models.Model):
     transaction = models.ForeignKey('Transaction', on_delete=models.PROTECT)
     account_head = models.ForeignKey('AccountHead', on_delete=models.PROTECT, related_name="head_name")
     position = models.CharField(choices=TRANS_POSITION, max_length=5)
-    amount = models.DecimalField(max_digits=18, decimal_places=3)
+    amount = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

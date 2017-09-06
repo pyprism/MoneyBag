@@ -81,8 +81,8 @@ class MBCryptr:
 
 
 #test
-key = MBCryptr.build_key_from_password('shadhin')
-cipher = MBCryptr.encrypt(key,'50000.00')
-print(cipher)
-plaintext = MBCryptr.decrypt(key,cipher)
-print(plaintext)
+# key = MBCryptr.build_key_from_password('shadhin')
+# cipher = MBCryptr.encrypt(key,'capital of mr habibair rahman sadhin')
+# print(cipher)
+# plaintext = MBCryptr.decrypt(key,cipher)
+# print(plaintext)
