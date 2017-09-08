@@ -70,7 +70,7 @@ class TransactionDetails(models.Model):
 
 
 class DashboardMeta(models.Model):
-    meta_key = models.CharField(max_length=255)
+    meta_key = models.TextField()
     meta_value = models.TextField()
     user = models.ForeignKey(User,on_delete=models.PROTECT)
 

@@ -63,11 +63,12 @@ class AccHelper():
         return False
 
     def add_dashboard_metas(new_user,en_key):
+        initial_value = MBCryptr.encrypt(en_key,'0')
         DashboardMeta.objects.bulk_create([
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_income'),meta_value='0'),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_expense'),meta_value='0'),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_payable'),meta_value='0'),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_receivable'),meta_value='0')
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_income'),meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_expense'),meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_payable'),meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_receivable'),meta_value=initial_value)
         ])
 
     def get_meta_data(user):
