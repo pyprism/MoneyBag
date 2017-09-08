@@ -65,10 +65,10 @@ class AccHelper():
     def add_dashboard_metas(new_user,en_key):
         initial_value = MBCryptr.encrypt(en_key,'0')
         DashboardMeta.objects.bulk_create([
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_income'),meta_value=initial_value),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_expense'),meta_value=initial_value),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_payable'),meta_value=initial_value),
-            DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_receivable'),meta_value=initial_value)
+            DashboardMeta(user=new_user,meta_key='total_income',meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key='total_expense',meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key='total_payable',meta_value=initial_value),
+            DashboardMeta(user=new_user,meta_key='total_receivable',meta_value=initial_value)
         ])
 
     def get_meta_data(request):
@@ -76,7 +76,7 @@ class AccHelper():
         metas = DashboardMeta.objects.filter(user=request.user).values('meta_key','meta_value')
         meta_data = dict()
         for meta in metas:
-            meta_data[MBCryptr.decrypt(en_key,meta['meta_key'])] = Decimal(MBCryptr.decrypt(en_key,meta['meta_value']))
+            meta_data[meta['meta_key']] = Decimal(MBCryptr.decrypt(en_key,meta['meta_value']))
         return meta_data
 
     #get dashbaord expense chart data
@@ -195,36 +195,63 @@ class AccHelper():
 
 
 
-    def get_all_group_heads(user,head_types=None):
+    def get_all_group_heads(request,head_types=None):
+        en_key = request.session.get('en_key')
         if head_types:
-            return Head.objects.filter(Q(user=user),Q(parent_head_code__in=head_types) | Q(head_code__in=head_types)).order_by('id')
+            heads = Head.objects.filter(Q(user=request.user),Q(parent_head_code__in=head_types) | Q(head_code__in=head_types)).order_by('id')
+        else:
+            heads = Head.objects.filter(user=request.user).order_by('id')
 
-        return Head.objects.filter(user=user).order_by('id')
+        plain_heads = []
+        for head in heads:
+            plain_heads.append(
+                {
+                    'head_code' : head.head_code,
+                    'name': MBCryptr.decrypt(en_key,head.name),
+                    'id': head.id,
+                    'ledger_head_code': head.ledger_head_code,
+                    'parent_head_code': head.parent_head_code
+                }
+            )
+        return plain_heads
 
-    def get_certain_group_heads(user,head_types):
-        return Head.objects.filter(user=user,head_code__in=head_types).order_by('id')
+    def get_certain_group_heads(request,head_types):
+        heads = Head.objects.filter(user=request.user,head_code__in=head_types).order_by('id')
+        en_key = request.session.get('en_key')
+        plain_heads = []
+        for head in heads:
+            plain_heads.append(
+                {
+                    'head_code' : head.head_code,
+                    'name': MBCryptr.decrypt(en_key,head.name),
+                    'id': head.id,
+                    'ledger_head_code': head.ledger_head_code,
+                    'parent_head_code': head.parent_head_code
+                }
+            )
+        return plain_heads
 
     def get_head_type(parent_head_code,user_id):
         parent_head = Head.objects.filter(head_code=parent_head_code,user=user_id).first()
         return parent_head.type
 
-    def get_heads_tree(user,payments_only=None):
+    def get_heads_tree(rquest,payments_only=None):
         #all_heads = Head.objects.filter(user=user).order_by('id')
         if payments_only:
             head_types = [AccConstant.ACC_HEAD_CASH, AccConstant.ACC_HEAD_BANK, AccConstant.ACC_HEAD_MOBILE_BANKING]
-            all_heads = AccHelper.get_all_group_heads(user,head_types)
+            all_heads = AccHelper.get_all_group_heads(rquest,head_types)
         else:
-            all_heads = AccHelper.get_all_group_heads(user)
+            all_heads = AccHelper.get_all_group_heads(rquest)
 
         heads_dict = dict()
         #sort heads according to parent using dictonary of list of dict
         for head in all_heads:
-            head_dict = {'name': head.name, 'head_code': head.head_code, 'id': head.id, 'ledger_head_code': head.ledger_head_code}
+            head_dict = {'name': head['name'], 'head_code': head['head_code'], 'id': head['id'], 'ledger_head_code': head['ledger_head_code']}
             # print(head.parent_head_code,"=>",head_dict)
-            if head.parent_head_code in heads_dict:
-                heads_dict[head.parent_head_code].append(head_dict)
+            if head['parent_head_code'] in heads_dict:
+                heads_dict[head['parent_head_code']].append(head_dict)
             else:
-                heads_dict[head.parent_head_code] = [head_dict]
+                heads_dict[head['parent_head_code']] = [head_dict]
 
         tstring = ['']
         #call tree builder method
@@ -264,12 +291,14 @@ class AccHelper():
        payment_methods = request.POST.getlist('payment_methods[]')
        payment_methods_amount = request.POST.getlist('payment_method_amount[]')
        payment_methods_note = request.POST.getlist('payment_method_note[]')
+       en_key = request.session.get('en_key')
 
        with transaction.atomic():
            try:
                if voucher_type == AccConstant.VOUCHER_RECEIPT:
                    for index, item in enumerate(payment_methods):
                        note = None
+                       amount = MBCryptr.encrypt(en_key,payment_methods_amount[index])
                        if 0 <= index < len(payment_methods_note):
                            note = payment_methods_note[index]
 
@@ -284,23 +313,25 @@ class AccHelper():
                            trans_id,
                            payment_methods[index],
                            AccConstant.DEBIT,
-                           payment_methods_amount[index]
+                           amount
                        )
                        AccHelper.create_transaction_details(
                            trans_id,
                            request.POST.get('acc_head_id'),
                            AccConstant.CREDIT,
-                           payment_methods_amount[index]
+                           amount
                        )
                        voucher_id = trans_id
 
                        dashboard_meta = DashboardMeta.objects.filter(user=request.user,meta_key='total_income').first()
-                       dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value)+Decimal(payment_methods_amount[index])
+                       dashboard_meta.meta_value = MBCryptr.encrypt(en_key,str(Decimal(MBCryptr.decrypt(en_key,dashboard_meta.meta_value))+Decimal(payment_methods_amount[index])))
                        dashboard_meta.save()
 
                elif voucher_type == AccConstant.VOUCHER_PAYMENT:
                    for index, item in enumerate(payment_methods):
                        note = None
+                       amount = MBCryptr.encrypt(en_key,payment_methods_amount[index])
+
                        if 0 <= index < len(payment_methods_note):
                            note = payment_methods_note[index]
 
@@ -315,19 +346,18 @@ class AccHelper():
                            trans_id,
                            payment_methods[index],
                            AccConstant.CREDIT,
-                           payment_methods_amount[index]
+                           amount
                        )
                        AccHelper.create_transaction_details(
                            trans_id,
                            request.POST.get('acc_head_id'),
                            AccConstant.DEBIT,
-                           payment_methods_amount[index]
+                           amount
                        )
                        voucher_id = trans_id
 
                        dashboard_meta = DashboardMeta.objects.filter(user=request.user, meta_key='total_expense').first()
-                       dashboard_meta.meta_value = Decimal(dashboard_meta.meta_value) + Decimal(
-                           payment_methods_amount[index])
+                       dashboard_meta.meta_value = MBCryptr.encrypt(en_key,str(Decimal(MBCryptr.decrypt(en_key,dashboard_meta.meta_value)) + Decimal(payment_methods_amount[index])))
                        dashboard_meta.save()
            except IntegrityError:
                return False
@@ -363,7 +393,7 @@ class AccHelper():
         return True
 
     #get child heads
-    def get_all_child_heads(user):
+    def get_all_child_heads(user,en_key):
         parent_heads = Head.objects.filter(user=user).values_list('parent_head_code',flat=True).distinct()
         child_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=parent_heads),~Q(head_code__in=parent_heads)).order_by('name').values_list('id','name','parent_head_code')
         heads = []
@@ -371,7 +401,7 @@ class AccHelper():
             parent_head = Head.objects.filter(user=user,head_code=head[2]).first()
             heads.append([
                 head[0],
-                head[1]+'('+parent_head.name+')',
+                MBCryptr.decrypt(en_key,head[1])+'('+MBCryptr.decrypt(en_key,parent_head.name)+')',
             ])
         return heads
 
@@ -399,9 +429,9 @@ class AccHelper():
         }[account]
 
     #generate income statements
-    def generate_income_statement(user,month_year):
+    def generate_income_statement(request,month_year):
         #get all the receipts
-        receipts = Head.objects.filter(user=user,parent_head_code=0,type=AccConstant.INCOME)
+        receipts = Head.objects.filter(user=request.user,parent_head_code=0,type=AccConstant.INCOME)
         income_statement_content = [{
             'title': '<b>Revenues</b>',
             'amount_column_1': '',
@@ -409,7 +439,7 @@ class AccHelper():
         }]
         income = [0]
         for recipt in receipts:
-            AccHelper.develop_childs_statement(user,recipt,income_statement_content,month_year,AccConstant.INCOME,0,income)
+            AccHelper.develop_childs_statement(request,recipt,income_statement_content,month_year,AccConstant.INCOME,0,income)
 
         income_statement_content.append(
             {
@@ -436,10 +466,10 @@ class AccHelper():
             }
         )
         # get all the receipts
-        receipts = Head.objects.filter(user=user, parent_head_code=0, type=AccConstant.EXPENSE)
+        receipts = Head.objects.filter(user=request.user, parent_head_code=0, type=AccConstant.EXPENSE)
         expense = [0]
         for recipt in receipts:
-            AccHelper.develop_childs_statement(user, recipt, income_statement_content, month_year, AccConstant.EXPENSE, 0, expense)
+            AccHelper.develop_childs_statement(request, recipt, income_statement_content, month_year, AccConstant.EXPENSE, 0, expense)
 
         income_statement_content.append(
             {
@@ -479,18 +509,19 @@ class AccHelper():
         return income_statement_content
 
     #get child heads statement
-    def develop_childs_statement(user,head_info,income_statement_content,month_year,st_type,level,summation):
-        child_heads = Head.objects.filter(user=user,parent_head_code=head_info.head_code).count()
+    def develop_childs_statement(request,head_info,income_statement_content,month_year,st_type,level,summation):
+        en_key = request.session.get('en_key')
+        child_heads = Head.objects.filter(user=request.user,parent_head_code=head_info.head_code).count()
         if child_heads:
             #get childs
-            receipts = Head.objects.filter(user=user, parent_head_code=head_info.head_code)
+            receipts = Head.objects.filter(user=request.user, parent_head_code=head_info.head_code)
             spaces =""
             for x in range(0,level):
                 spaces = spaces + '&nbsp;&nbsp;&nbsp;'
 
                 income_statement_content.append(
                 {
-                    'title': spaces+head_info.name+':',
+                    'title': spaces+MBCryptr.decrypt(en_key,head_info.name)+':',
                     'amount_column_1': '',
                     'amount_column_2': ''
 
@@ -499,7 +530,7 @@ class AccHelper():
 
             level = level + 1
             for receipt in receipts:
-                AccHelper.develop_childs_statement(user,receipt,income_statement_content,month_year,st_type,level,summation)
+                AccHelper.develop_childs_statement(request,receipt,income_statement_content,month_year,st_type,level,summation)
 
         else:
             total = Decimal(0.00)
@@ -522,16 +553,17 @@ class AccHelper():
             )
 
             for transaction in transactions:
+                transaction_amount = Decimal(MBCryptr.decrypt(en_key,transaction.amount))
                 if AccHelper.detect_account_type(st_type) == AccConstant.DEBIT:
                     if transaction.position == AccConstant.DEBIT:
-                        total = total - transaction.amount
+                        total = total - transaction_amount
                     else:
-                        total = total + transaction.amount
+                        total = total + transaction_amount
                 else:
                     if transaction.position == AccConstant.CREDIT:
-                        total = total - transaction.amount
+                        total = total - transaction_amount
                     else:
-                        total = total + transaction.amount
+                        total = total + transaction_amount
 
             summation[0] = summation[0] + total
             spaces = ""
@@ -540,7 +572,7 @@ class AccHelper():
 
             income_statement_content.append(
                 {
-                    'title': spaces + head_info.name + ':',
+                    'title': spaces + MBCryptr.decrypt(en_key,head_info.name) + ':',
                     'amount_column_1': total,
                     'amount_column_2': ''
 
@@ -548,18 +580,28 @@ class AccHelper():
             )
 
     #get heads except parents
-    def get_heads(user):
+    def get_heads(request):
+        en_key = request.session.get('en_key')
         #get all distinct parent heads
-        parent_heads = Head.objects.filter(user=user).distinct().values_list('parent_head_code',flat=True)
+        parent_heads = Head.objects.filter(user=request.user).distinct().values_list('parent_head_code',flat=True)
         p_heads = []
         for head in parent_heads:
             p_heads.append(head)
         #get all kids heads
-        kids_heads = Head.objects.filter(Q(user=user),~Q(parent_head_code=0),~Q(id__in=p_heads),~Q(head_code__in=p_heads)).order_by('name').values('id','name')
-        return kids_heads
+        kids_heads = Head.objects.filter(Q(user=request.user),~Q(parent_head_code=0),~Q(id__in=p_heads),~Q(head_code__in=p_heads)).order_by('name').values('id','name')
+        plain_kids_heads = []
+        for head in kids_heads:
+            plain_kids_heads.append(
+                {
+                    'id':head['id'],
+                    'name':MBCryptr.decrypt(en_key,head['name'])
+                }
+            )
+        return plain_kids_heads
 
     #generate ledger statement
-    def generate_ledger_statement(user,head_id,month_year):
+    def generate_ledger_statement(request,head_id,month_year):
+        en_key = request.session.get('en_key')
         # get request month last day
         month_year_part = month_year.split('-')
         last_day = monthrange(int(month_year_part[0]), int(month_year_part[1]))
@@ -575,7 +617,7 @@ class AccHelper():
         transactions = TransactionDetails.objects.select_related('transaction').filter(
             Q(transaction_id__in=unique_transactions),
             ~Q(account_head_id=head_id)
-        ).select_related('account_head').order_by('-transaction__transaction_date')
+        ).select_related('account_head').order_by('-transaction__transaction_date','-transaction__id')
 
         head = Head.objects.filter(id=head_id).first()
         total = 0
@@ -583,26 +625,27 @@ class AccHelper():
         for transaction in transactions:
             dr_amount = ''
             cr_amount = ''
+            transaction_amount = Decimal(MBCryptr.decrypt(en_key,transaction.amount))
             if AccHelper.detect_account_type(head.type) == AccConstant.DEBIT:
                 if transaction.position == AccConstant.DEBIT:
-                    total = total - transaction.amount
-                    dr_amount = transaction.amount
+                    total = total - transaction_amount
+                    dr_amount = transaction_amount
                 else:
-                    total = total + transaction.amount
-                    cr_amount = transaction.amount
+                    total = total + transaction_amount
+                    cr_amount = transaction_amount
             else:
                 if transaction.position == AccConstant.CREDIT:
-                    total = total - transaction.amount
-                    cr_amount = transaction.amount
+                    total = total - transaction_amount
+                    cr_amount = transaction_amount
                 else:
-                    total = total + transaction.amount
-                    dr_amount = transaction.amount
+                    total = total + transaction_amount
+                    dr_amount = transaction_amount
 
             ledger_content.append(
                 {
                     'transection_id' : transaction.transaction.id,
                     'date' : transaction.transaction.transaction_date,
-                    'title' : transaction.account_head.name+'('+str(transaction.account_head.head_code)+')',
+                    'title' : MBCryptr.decrypt(en_key,transaction.account_head.name)+'('+str(transaction.account_head.head_code)+')',
                     'voucher' : transaction.transaction.voucher_number,
                     'dr_amount' : dr_amount,
                     'cr_amount' : cr_amount,
