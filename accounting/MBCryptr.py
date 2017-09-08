@@ -76,7 +76,7 @@ class MBCryptr:
 
         # Decrypt and return the plaintext.
         plaintext = aes.decrypt(real_cipher_text)
-        return plaintext
+        return plaintext.decode('utf-8')
 
 
 

@@ -112,45 +112,43 @@ def register(request):
 @login_required
 @unlock_required
 def dashboard(request):
-    print('i am in dashboard')
-    return render(request, 'base/login.html')
-    meta_data = AccHelper.get_meta_data(request.user)
+    meta_data = AccHelper.get_meta_data(request)
     meta_data['balance'] = meta_data['total_income'] - meta_data['total_expense']
     meta_data['rp_or_adm'] = meta_data['total_receivable'] - meta_data['total_payable']
-    donut_chart_data = AccHelper.get_expenses(request.user)
+    donut_chart_data = AccHelper.get_expenses(request)
 
     current_date = datetime.today()
     #todays income expense
     # today = current_date.strftime('%Y-%m-%d')
-    today_inc_exp = AccHelper.get_income_expense_in_range(request.user,current_date,current_date)
+    today_inc_exp = AccHelper.get_income_expense_in_range(request,current_date,current_date)
 
     #yesterday income expense
     yester_day_date  = current_date + relativedelta(days=-1)
     # yester_day = yester_day_date.strftime('%Y-%m-%d')
-    yester_day_inc_exp = AccHelper.get_income_expense_in_range(request.user,yester_day_date,yester_day_date)
+    yester_day_inc_exp = AccHelper.get_income_expense_in_range(request,yester_day_date,yester_day_date)
 
     #this week income expense
     this_week_start  = current_date - timedelta(days=current_date.weekday()+2)
     this_week_end  = this_week_start + timedelta(days=6)
-    this_week_inc_exp = AccHelper.get_income_expense_in_range(request.user,this_week_start,this_week_end)
+    this_week_inc_exp = AccHelper.get_income_expense_in_range(request,this_week_start,this_week_end)
 
 
     # this week income expense
     last_week_end = this_week_start - timedelta(days=1)
     last_week_start = last_week_end - timedelta(days=6)
-    last_week_inc_exp = AccHelper.get_income_expense_in_range(request.user,last_week_start,last_week_end)
+    last_week_inc_exp = AccHelper.get_income_expense_in_range(request,last_week_start,last_week_end)
 
     #this month income expense
     _, num_days = monthrange(current_date.year, current_date.month)
     this_month_start = date(current_date.year, current_date.month, 1)
     this_month_end = date(current_date.year, current_date.month, num_days)
-    this_month_inc_exp = AccHelper.get_income_expense_in_range(request.user,this_month_start,this_month_end)
+    this_month_inc_exp = AccHelper.get_income_expense_in_range(request,this_month_start,this_month_end)
 
     # last month income expense
     _, num_days = monthrange(current_date.year, current_date.month-1)
     last_month_start = date(current_date.year, current_date.month-1, 1)
     last_month_end = date(current_date.year, current_date.month-1, num_days)
-    last_month_inc_exp = AccHelper.get_income_expense_in_range(request.user, last_month_start, last_month_end)
+    last_month_inc_exp = AccHelper.get_income_expense_in_range(request, last_month_start, last_month_end)
 
     context = {
         'meta_data':meta_data,

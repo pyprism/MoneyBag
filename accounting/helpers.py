@@ -71,19 +71,20 @@ class AccHelper():
             DashboardMeta(user=new_user,meta_key=MBCryptr.encrypt(en_key,'total_receivable'),meta_value=initial_value)
         ])
 
-    def get_meta_data(user):
-        metas = DashboardMeta.objects.filter(user=user).values('meta_key','meta_value')
+    def get_meta_data(request):
+        en_key = request.session.get('en_key')
+        metas = DashboardMeta.objects.filter(user=request.user).values('meta_key','meta_value')
         meta_data = dict()
         for meta in metas:
-            meta_data[meta['meta_key']] = Decimal(meta['meta_value'])
+            meta_data[MBCryptr.decrypt(en_key,meta['meta_key'])] = Decimal(MBCryptr.decrypt(en_key,meta['meta_value']))
         return meta_data
 
     #get dashbaord expense chart data
-    def get_expenses(user):
-
-        service_heads = Head.objects.filter(user=user,
+    def get_expenses(request):
+        en_key = request.session.get('en_key')
+        service_heads = Head.objects.filter(user=request.user,
                                                    parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
-        first_class_heads = Head.objects.filter(Q(user=user),
+        first_class_heads = Head.objects.filter(Q(user=request.user),
                                            Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(
                                                parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(
                                                parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),
@@ -94,43 +95,50 @@ class AccHelper():
         for head in service_heads:
             heads.append({
                'id' : head.id,
-               'name' : head.name,
+               'name' : MBCryptr.decrypt(en_key,head.name),
             })
 
         for head in first_class_heads:
             heads.append({
                'id' : head.id,
-               'name' : head.name,
+               'name' : MBCryptr.decrypt(en_key,head.name),
             })
 
         expenses = []
         total = Decimal(0.00)
         for head in heads:
             # get transactions
-            transaction = TransactionDetails.objects.filter(account_head_id=head['id'],position=AccConstant.DEBIT).aggregate(total=Sum('amount'))
-            if transaction['total']:
-                expenses.append({
-                    'name' : head['name'],
-                    'total' : transaction['total']
-                })
-                total += transaction['total']
+            transactions = TransactionDetails.objects.filter(account_head_id=head['id'],position=AccConstant.DEBIT).values_list('amount',flat=True)
+            sub_total = Decimal(0.00)
+            for amount in transactions:
+                sub_total += Decimal(MBCryptr.decrypt(en_key,amount))
+
+            expenses.append({
+                'name' : head['name'],
+                'total' : sub_total
+            })
+            total += sub_total
         chart_data = []
         for expense in expenses:
+            percentage = 0.00
+            if expense['total'] > 0.00:
+                percentage = round(((expense['total']*100)/total),2)
             chart_data.append({
                 'label' : expense['name'],
-                'value' : round(((expense['total']*100)/total),2)
+                'value' : percentage
             })
 
 
         return chart_data
 
     #get dashabord date range income expense
-    def get_income_expense_in_range(user,date_from,date_to):
+    def get_income_expense_in_range(request,date_from,date_to):
+        en_key = request.session.get('en_key')
         #get incomes
         #income heads
-        service_heads = Head.objects.filter(user=user,
+        service_heads = Head.objects.filter(user=request.user,
                                                    parent_head_code=AccConstant.ACC_HEAD_SERVICE_REVENUE)
-        first_class_heads = Head.objects.filter(Q(user=user),
+        first_class_heads = Head.objects.filter(Q(user=request.user),
                                            Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_INCOMES) | Q(
                                                parent_head_code=AccConstant.ACC_HEAD_LOAN),
                                            ~Q(id=AccConstant.ACC_HEAD_SERVICE_REVENUE))
@@ -143,17 +151,20 @@ class AccHelper():
             heads.append(head.id)
 
         # get transactions
-        income = TransactionDetails.objects.select_related('transaction').filter(
+        incomes = TransactionDetails.objects.select_related('transaction').filter(
             Q(transaction__transaction_date__range=[date_from,date_to]),
             Q(account_head_id__in=heads),
             Q(position=AccConstant.CREDIT)
-        ).aggregate(total=Sum('amount'))
+        ).values_list('amount',flat=True)
+        total_income = Decimal(0.00)
+        for income in incomes:
+            total_income += Decimal(MBCryptr.decrypt(en_key,income))
 
         # get expenses
         # expense heads
-        service_heads = Head.objects.filter(user=user,
+        service_heads = Head.objects.filter(user=request.user,
                                             parent_head_code=AccConstant.ACC_HEAD_SERVICE_EXPENDITURE)
-        first_class_heads = Head.objects.filter(Q(user=user),
+        first_class_heads = Head.objects.filter(Q(user=request.user),
                                                 Q(parent_head_code=AccConstant.ACC_HEAD_DIRECT_EXPENSES) | Q(
                                                     parent_head_code=AccConstant.ACC_HEAD_LOAN) | Q(
                                                     parent_head_code=AccConstant.ACC_HEAD_GENERAL_EXPENDITURE),
@@ -167,15 +178,18 @@ class AccHelper():
             heads.append(head.id)
 
         # get transactions
-        expense = TransactionDetails.objects.select_related('transaction').filter(
+        expenses = TransactionDetails.objects.select_related('transaction').filter(
             Q(transaction__transaction_date__range=[date_from, date_to]),
             Q(account_head_id__in=heads),
             Q(position=AccConstant.DEBIT)
-        ).aggregate(total=Sum('amount'))
+        ).values_list('amount',flat=True)
+        total_expense = Decimal(0.00)
+        for expense in expenses:
+            total_expense += Decimal(MBCryptr.decrypt(en_key,expense))
 
         return {
-            'income' : income['total'],
-            'expense' : expense['total'],
+            'income' : total_income,
+            'expense' : total_expense,
         }
 
 
