@@ -12,6 +12,7 @@ sudo apt-get install libffi-dev python3-dev
 # screenshots
 <img src="screenshots/singup.png">
 <img src="screenshots/login.png">
+<img src="screenshots/unlock.png">
 <img src="screenshots/dashboard.png">
 <img src="screenshots/ledger-head.png">
 <img src="screenshots/payment-head.png">
