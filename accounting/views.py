@@ -15,8 +15,10 @@ from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from collections import OrderedDict
 from .MBCryptr import MBCryptr
+from .decorator import unlock_required
 
 @login_required
+@unlock_required
 def add_ledger_head(request):
     if request.method == "POST":
         add_ledger_head_form = headForm(request.POST)
@@ -37,6 +39,7 @@ def add_ledger_head(request):
     return render(request, 'accounting/add-ledger-head.html',context)
 
 @login_required
+@unlock_required
 def add_payment_head(request):
     if request.method == "POST":
         add_ledger_head_form = headForm(request.POST)
@@ -61,6 +64,7 @@ def add_payment_head(request):
 
 
 @login_required
+@unlock_required
 def edit_ledger_head(request):
     if request.method == "POST":
         if request.POST.get('acc_head_id',False) and request.POST.get('name',False):
@@ -86,12 +90,14 @@ def edit_ledger_head(request):
         }, safe=False)
 
 @login_required
+@unlock_required
 def all_heads(request):
     heads_tree = AccHelper.get_heads_tree(request)
     context = {'tree':heads_tree[0]}
     return render(request, 'accounting/heads.html',context)
 
 @login_required
+@unlock_required
 def voucher_add(request,voucher_type):
     en_key = request.session.get('en_key')
     if request.method == "POST":
@@ -148,6 +154,7 @@ def voucher_add(request,voucher_type):
 
 
 @login_required
+@unlock_required
 def voucher_details(request,voucher_id):
     voucher_info = Transaction.objects.filter(id=voucher_id,user=request.user).first()
     if not voucher_info:
@@ -174,6 +181,7 @@ def voucher_details(request,voucher_id):
     return render(request, 'accounting/voucher-details.html', context)
 
 @login_required
+@unlock_required
 def acc_voucher_add(request,voucher_type):
     en_key = request.session.get('en_key')
     if request.method == "POST":
@@ -252,6 +260,7 @@ def acc_voucher_add(request,voucher_type):
 
 
 @login_required
+@unlock_required
 def transaction_statement(request):
     en_key = request.session.get('en_key')
     date_from = request.GET.get('date_from',False)
@@ -291,6 +300,7 @@ def transaction_statement(request):
 
 
 @login_required
+@unlock_required
 def income_statement(request):
     month_year = request.GET.get('monthYear', False)
     if not month_year:
@@ -302,6 +312,7 @@ def income_statement(request):
 
 
 @login_required
+@unlock_required
 def ledger_statement(request):
     month_year = request.GET.get('monthYear', False)
     head_id = request.GET.get('head_id', False)
