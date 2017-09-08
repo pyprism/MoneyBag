@@ -58,7 +58,7 @@ class AccHelper():
         en_key = MBCryptr.build_key_from_password(master_pass)
         cash_head = Head.objects.filter(user=user,parent_head_code=AccConstant.ACC_HEAD_CASH).first()
         # print('=====>',MBCryptr.decrypt(en_key,cash_head.name))
-        if MBCryptr.decrypt(en_key,cash_head.name) == "Cash".encode('utf-8'):
+        if MBCryptr.decrypt(en_key,cash_head.name) == "Cash":
             return en_key
         return False
 
