@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from accounting.helpers import AccHelper
 from django.db import IntegrityError,transaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime, timedelta,date
@@ -128,3 +129,36 @@ def logout(request):
     messages.add_message(request, messages.SUCCESS, 'Your are successfully logged out.')
     auth.logout(request)
     return redirect('login')
+
+@login_required
+def change_password(request):
+    """
+        Handles password change
+        :param request:
+        :return:
+        """
+    if request.method == "POST":
+        old_password = request.POST.get('old_password')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password == old_password:
+            messages.error(request, 'new password and old one can not be same!')
+            return redirect('change_password')
+        if password != confirm_password:
+            messages.error(request, 'Confirm password did not match!')
+            return redirect('change_password')
+
+        current_user = User.objects.get(id=request.user.id)
+        if not current_user.check_password(old_password):
+            messages.error(request, 'Old password did not match!')
+            return redirect('change_password')
+
+        current_user.set_password(password)
+        current_user.save()
+        update_session_auth_hash(request, current_user)  # Important!
+        messages.info(request, 'Password change successfullly!')
+        return redirect('dashboard')
+
+    else:
+        return render(request, 'base/change_password.html')

@@ -25,6 +25,34 @@ var Gate = {
             }
         });
     },
+    changePasswordValidation: function () {
+        $('#change_password').validate({
+            rules: {
+                'confirm_password': {
+                    equalTo: '[name="password"]'
+                },
+              'old_password': {
+                    notEqual: '[name="password"]'
+                }
+            },
+            messages:{
+                old_password:{
+                    notEqual: "New password and old password can't be same!!!!"
+                }
+            },
+            highlight: function (input) {
+                //console.log(input);
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function (input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function (error, element) {
+                $(element).parents('.input-group').append(error);
+                $(element).parents('.form-group').append(error);
+            }
+        });
+    },
     signInValidation: function () {
         $('#sign_in').validate({
             highlight: function (input) {
