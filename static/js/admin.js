@@ -128,7 +128,6 @@ $.AdminBSB.leftSideBar = {
                     var activeItemOffsetTop = $('.menu .list li.active')[0].offsetTop;
                     if (activeItemOffsetTop > 150) $el.slimscroll({ scrollTo: activeItemOffsetTop + 'px' });
                 }
-
             }
         }
     },
