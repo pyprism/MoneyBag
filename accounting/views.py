@@ -59,7 +59,7 @@ def add_payment_head(request):
     heads = AccHelper.get_certain_group_heads(request,head_types)
     tree = AccHelper.get_heads_tree(request,payments_only=True)
 
-    context = {'form':add_ledger_head_form,'heads':heads, 'tree':tree[0]}
+    context = {'form':add_ledger_head_form,'heads':heads, 'tree':tree}
     return render(request, 'accounting/add-payment-head.html',context)
 
 
@@ -93,7 +93,7 @@ def edit_ledger_head(request):
 @unlock_required
 def all_heads(request):
     heads_tree = AccHelper.get_heads_tree(request)
-    context = {'tree':heads_tree[0]}
+    context = {'tree':heads_tree}
     return render(request, 'accounting/heads.html',context)
 
 @login_required

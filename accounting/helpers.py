@@ -253,21 +253,21 @@ class AccHelper():
             else:
                 heads_dict[head['parent_head_code']] = [head_dict]
 
-        tstring = ['']
+        tstring = []
         #call tree builder method
         AccHelper.create_tree(heads_dict,heads_dict[sorted(list(heads_dict.keys()))[0]],tstring)
-        return  tstring
+        return  ''.join(tstring)
 
     #build head tree using recersive call from parent to child
     def create_tree(heads, parent,tstring):
         for l in parent:
-            tstring[0] +='<li class="tree-menu-item-hover"><span><p>'+l['name']+'</p><button data-id="'+str(l['id'])+'" data-ledger-code="'+str(l['ledger_head_code'])+'" type="button" class="tree-menu-item btn bg-blue btn-circle waves-effect waves-circle waves-light waves-float pull-right btnEdit"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="material-icons">mode_edit</i></button></span></span></span>';
+            tstring.append('<li class="tree-menu-item-hover"><span><p>'+l['name']+'</p><button data-id="'+str(l['id'])+'" data-ledger-code="'+str(l['ledger_head_code'])+'" type="button" class="tree-menu-item btn bg-blue btn-circle waves-effect waves-circle waves-light waves-float pull-right btnEdit"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="material-icons">mode_edit</i></button></span></span></span>')
             if l['id'] in heads:
-                tstring[0] +='<ul>'
+                tstring.append('<ul>')
                 #call method itself for child heads
                 AccHelper.create_tree(heads,heads[l['id']], tstring)
-                tstring[0] += '</ul>'
-                tstring[0] += '</li>'
+                tstring.append('</ul>')
+            tstring.append('</li>')
 
     #form voucher validation
     def validate_voucher(data):
