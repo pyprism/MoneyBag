@@ -13,7 +13,8 @@ $(function () {
      jQuery.validator.addMethod("notEqual", function(value, element, param) {
             return this.optional(element) || value != $(param).val();
         }, "Please specify a different value");
-})
+});
+
 //On focus event
 $('.form-control').focus(function () {
     $(this).parent().addClass('focused');

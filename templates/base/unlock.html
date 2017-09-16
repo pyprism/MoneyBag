@@ -1,0 +1,60 @@
+{% extends "base/backend_master.html" %}
+{% block title %} Unlock {% endblock %}ss
+
+{% block childPage %}
+    <section class="content">
+        <div class="container-fluid dashboard-widget">
+            <div class="unlock-box">
+                <div class="card">
+                    <div class="header bg-light-blue">
+                        <h2 class="text-capitalize text-center">
+                            Unlock your data to proceed
+                        </h2>
+
+                    </div>
+                    <div class="body">
+                        <form id="unlock" {% url 'unlock' %} method="POST">
+                            {% csrf_token %}
+                            {% if messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                            {% if message.tags == "error" %}
+                                            <li>{{ message }}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                                <div class="form-line">
+                                    <input type="password" class="form-control" autofocus name="master_password" minlength="8" placeholder="Master Password" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="pull-right btn btn-lg btn-circle bg-light-blue waves-effect btn-unlock" type="submit">
+                                    <i class="material-icons">lock_open</i>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}s
+{% block child_page_js %}
+    <script>
+        $( document ).ready(function() {
+            $('ul.list').addClass('lock-menu');
+            if(!$('.messages li').length){
+             $('.messages').parent().addClass('hide');
+            }
+            Gate.unlockFormValidate();
+        });
+    </script>
+{% endblock %}

@@ -5,11 +5,19 @@ var Gate = {
     signUpValidation: function () {
         $('#sign_up').validate({
             rules: {
-                'terms': {
-                    required: true
-                },
-                'confirm': {
+                // 'terms': {
+                //     required: true
+                // },
+                'confirm_password': {
                     equalTo: '[name="password"]'
+                },
+                'master_password': {
+                    notEqual: '[name="password"]'
+                }
+            },
+            messages:{
+                master_password:{
+                    notEqual: "Password and master password can't be same!!!!"
                 }
             },
             highlight: function (input) {
@@ -40,6 +48,21 @@ var Gate = {
                     notEqual: "New password and old password can't be same!!!!"
                 }
             },
+            highlight: function (input) {
+                //console.log(input);
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function (input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function (error, element) {
+                $(element).parents('.input-group').append(error);
+                $(element).parents('.form-group').append(error);
+            }
+        });
+    },
+      unlockFormValidate: function () {
+        $('#unlock').validate({
             highlight: function (input) {
                 //console.log(input);
                 $(input).parents('.form-line').addClass('error');
@@ -116,7 +139,7 @@ var Gate = {
     headEditHandler: function () {
         $('.btnEdit').click(function (e) {
             e.preventDefault();
-            console.log('i am in fire');
+            // console.log('i am in fire');
             var dataId = $(this).attr('data-id');
             var ledgerCode = $(this).attr('data-ledger-code');
             var headName = $(this).siblings('p').text();
@@ -140,7 +163,7 @@ var Gate = {
                         showNotification("bg-teal", res.message, 'top', 'right', 'animated zoomInRight', 'animated zoomOutRight');
                         $('#editHeadModal').modal('hide');
                         setTimeout(function () {
-                           location.reload();
+                            location.reload();
 
                         },2000);
                     }
@@ -157,7 +180,7 @@ var Gate = {
 
         });
     },
-     voucherFormValidate: function () {
+    voucherFormValidate: function () {
         $('#add_voucher').validate({
             rules: {
                 'description':{
@@ -176,12 +199,12 @@ var Gate = {
         });
         $('#add_voucher').submit(function (e) {
             e.preventDefault();
-           if(Voucher.payment_method_table_count){
-               this.submit();
-           }
-           else{
+            if(Voucher.payment_method_table_count){
+                this.submit();
+            }
+            else{
                 showNotification("bg-red", 'Please add payment method!', 'top', 'right', 'animated zoomInRight', 'animated zoomOutRight');
-           }
+            }
         });
     },
     accVoucherFormValidate: function () {
