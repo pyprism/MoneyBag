@@ -10,5 +10,7 @@ sudo apt-get install libssl-dev libffi-dev python3-dev
 # screenshots
 <img src="screenshots/dashboard.png">
 
+<a href="https://github.com/pyprism/MoneyBag/tree/master/screenshots">More Screenshots</a>
+
 Enjoy :)
 
