@@ -78,46 +78,49 @@ def register(request):
     """
     if request.user.is_authenticated:
         return redirect('dashboard')
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        master_password = request.POST.get('master_password')
-        email = request.POST.get('email')
+    if REGISTER == True:
+        if request.method == "POST":
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+            master_password = request.POST.get('master_password')
+            email = request.POST.get('email')
 
-        if password == master_password:
-            messages.error(request, "login password and master password can't be same!!!")
-            return redirect('register')
-
-        if len(master_password) < 8:
-            messages.error(request, "Master password must be strong and minimum 10 letter long!")
-            return redirect('register')
-
-        if password == confirm_password:
-            user_exists = User.objects.filter(email=email)
-            if user_exists:
-                messages.error(request, "Account already exists!")
+            if password == master_password:
+                messages.error(request, "login password and master password can't be same!!!")
                 return redirect('register')
-            else:
-                with transaction.atomic():
-                    try:
-                        user = User.objects.create_user(username=username,
-                                                        email=email,
-                                                        password=password)
-                        # call encryptr class and get key
-                        en_key = MBCryptr.build_key_from_password(master_password)
-                        AccHelper.create_all_basic_acc_heads(user, en_key)
-                        AccHelper.add_dashboard_metas(user, en_key)
-                        return render(request, 'base/thanks.html')
-                    except IntegrityError:
-                        messages.error(request, "Internal error! Contact with support.")
-                        return redirect('register')
 
+            if len(master_password) < 8:
+                messages.error(request, "Master password must be strong and minimum 10 letter long!")
+                return redirect('register')
+
+            if password == confirm_password:
+                user_exists = User.objects.filter(email=email)
+                if user_exists:
+                    messages.error(request, "Account already exists!")
+                    return redirect('register')
+                else:
+                    with transaction.atomic():
+                        try:
+                            user = User.objects.create_user(username=username,
+                                                            email=email,
+                                                            password=password)
+                            # call encryptr class and get key
+                            en_key = MBCryptr.build_key_from_password(master_password)
+                            AccHelper.create_all_basic_acc_heads(user, en_key)
+                            AccHelper.add_dashboard_metas(user, en_key)
+                            return render(request, 'base/thanks.html')
+                        except IntegrityError:
+                            messages.error(request, "Internal error! Contact with support.")
+                            return redirect('register')
+
+            else:
+                messages.error(request, 'Password did not match!')
+                return redirect('register')
         else:
-            messages.error(request, 'Password did not match!')
-            return redirect('register')
+            return render(request, 'base/sign_up.html')
     else:
-        return render(request, 'base/sign_up.html')
+        raise PermissionDenied
 
 
 @login_required
