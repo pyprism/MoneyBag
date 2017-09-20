@@ -6,13 +6,15 @@ from accounting.helpers import AccHelper
 from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-import json
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from accounting.MBCryptr import MBCryptr
 from accounting.decorator import unlock_required
+from proj.settings import REGISTER
+from django.core.exceptions import PermissionDenied
+import json
 
 
 def login(request):
@@ -35,7 +37,11 @@ def login(request):
             messages.error(request, 'Username/Password is not valid!')
             return redirect('/')
     else:
-        return render(request, 'base/login.html')
+        if REGISTER == True:  # monkey patch :P ; enable/disable registration link
+            register = True
+        elif REGISTER == 'False':
+            register = False
+        return render(request, 'base/login.html', {'register': register})
 
 
 @login_required
