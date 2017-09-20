@@ -41,30 +41,31 @@ class LoginViewTest(TestCase):
         self.c.login(username='hiren', password='password')
         response = self.c.get('/', follow=True)
         self.assertRedirects(response, reverse('unlock'))
-#
-#
-# class RegisterViewTest(TestCase):
-#
-#     def setUp(self):
-#         User.objects.create_user('hiren', 'a@b.com', 'password')
-#         self.c = Client()
-#
-#     def test_login_url_resolves_to_login_view(self):
-#         found = resolve('/register/')
-#         self.assertEqual(found.func, views.register)
-#
-#     def test_view_returns_correct_template(self):
-#         response = self.c.get('/register/')
-#         self.assertTemplateUsed(response, 'base/sign_up.html')
-#
-#     def test_redirect_for_authenticated_user_works(self):
-#         self.c.login(username='hiren', password='password')
-#         response = self.c.get('/register/')
-#         self.assertRedirects(response, '/accounting/dashboard/')
-#
-#     def test_registration(self):
-#         self.c.post('/register/', {'username': 'bunny', 'password': 'pass',
-#                                    'email': 'meow@meow.com', 'confirm_password': 'pass'})
-#         self.assertEqual(User.objects.count(), 2)
-#
-#
+
+
+class RegisterViewTest(TestCase):
+
+    def setUp(self):
+        User.objects.create_user('hiren', 'a@b.com', 'password')
+        self.c = Client()
+
+    def test_login_url_resolves_to_login_view(self):
+        found = resolve(reverse('register'))
+        self.assertEqual(found.func, views.register)
+
+    def test_view_returns_correct_template(self):
+        response = self.c.get(reverse('register'))
+        self.assertTemplateUsed(response, 'base/sign_up.html')
+
+    def test_redirect_for_authenticated_user_works(self):
+        self.c.login(username='hiren', password='password')
+        response = self.c.get(reverse('register'), follow=True)
+        self.assertRedirects(response, reverse('unlock'))
+
+    def test_registration(self):
+        self.c.post(reverse('register'), {'username': 'bunny', 'password': 'pass',
+                                          'email': 'meow@meow.com', 'confirm_password': 'pass',
+                                          'master_password': '1234567890'})
+        self.assertEqual(User.objects.count(), 2)
+
+
