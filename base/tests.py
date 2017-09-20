@@ -29,18 +29,18 @@ class LoginViewTest(TestCase):
         response = self.c.get(reverse('dashboard'))
         self.assertRedirects(response, '/?next=' + reverse('dashboard'))
 
-#     def test_redirect_works_for_bad_auth(self):
-#         respond = self.c.post('/', {'username': 'hiren', 'password': 'bad pass'})
-#         self.assertRedirects(respond, '/')
-#
-#     def test_view_returns_correct_template(self):
-#         response = self.c.get('/')
-#         self.assertTemplateUsed(response, 'base/login.html')
-#
-#     def test_authenticated_user_redirect_to_the_app(self):
-#         self.c.login(username='hiren', password='password')
-#         response = self.c.get('/', follow=True)
-#         self.assertRedirects(response, '/accounting/dashboard/')
+    def test_redirect_works_for_bad_auth(self):
+        respond = self.c.post('/', {'username': 'hiren', 'password': 'bad pass'})
+        self.assertRedirects(respond, '/')
+
+    def test_view_returns_correct_template(self):
+        response = self.c.get('/')
+        self.assertTemplateUsed(response, 'base/login.html')
+
+    def test_authenticated_user_redirect_to_the_app(self):
+        self.c.login(username='hiren', password='password')
+        response = self.c.get('/', follow=True)
+        self.assertRedirects(response, reverse('unlock'))
 #
 #
 # class RegisterViewTest(TestCase):
