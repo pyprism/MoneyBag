@@ -78,7 +78,7 @@ def register(request):
     """
     if request.user.is_authenticated:
         return redirect('dashboard')
-    if REGISTER == True:
+    if REGISTER == True or REGISTER == 'True':
         if request.method == "POST":
             username = request.POST.get('username')
             password = request.POST.get('password')
