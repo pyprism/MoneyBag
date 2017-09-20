@@ -133,8 +133,8 @@ def dashboard(request):
     yester_day_inc_exp = AccHelper.get_income_expense_in_range(request, yester_day_date, yester_day_date)
 
     # this week income expense
-    this_week_start  = current_date - timedelta(days=current_date.weekday()+2)
-    this_week_end  = this_week_start + timedelta(days=6)
+    this_week_start = current_date - timedelta(days=current_date.weekday()+2)
+    this_week_end = this_week_start + timedelta(days=6)
     this_week_inc_exp = AccHelper.get_income_expense_in_range(request, this_week_start, this_week_end)
 
     # this week income expense
