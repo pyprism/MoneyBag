@@ -96,7 +96,7 @@ def register(request):
 
             if password == confirm_password:
                 user_exists = User.objects.filter(email=email)
-                if user_exists:
+                if user_exists.exists():
                     messages.error(request, "Account already exists!")
                     return redirect('register')
                 else:
