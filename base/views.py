@@ -3,16 +3,17 @@ from django.contrib import messages
 from django.contrib import auth
 from django.contrib.auth.models import User
 from accounting.helpers import AccHelper
-from django.db import IntegrityError,transaction
+from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from datetime import datetime, timedelta,date
+from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from accounting.MBCryptr import MBCryptr
 from accounting.decorator import unlock_required
+
 
 def login(request):
     """
@@ -28,13 +29,14 @@ def login(request):
         user = auth.authenticate(username=username, password=password)
         if user:
             auth.login(request, user)
-            messages.info(request,'Welcome, Login successfull!')
+            messages.info(request, 'Welcome, Login successful!')
             return redirect('unlock')
         else:
             messages.error(request, 'Username/Password is not valid!')
             return redirect('/')
     else:
         return render(request, 'base/login.html')
+
 
 @login_required
 def unlock(request):
@@ -44,9 +46,9 @@ def unlock(request):
         :return:
         """
     if request.method == "POST":
-        master_password = request.POST.get('master_password',False)
-        if master_password and len(master_password)>=8:
-            en_key = AccHelper.is_mpass_valid(request.user,master_password)
+        master_password = request.POST.get('master_password', False)
+        if master_password and len(master_password) >= 8:
+            en_key = AccHelper.is_mpass_valid(request.user, master_password)
             if en_key:
                 request.session['en_key'] = en_key.decode('utf-8')
                 return redirect('dashboard')
@@ -60,6 +62,7 @@ def unlock(request):
             return redirect('dashboard')
 
         return render(request, 'base/unlock.html')
+
 
 def register(request):
     """
@@ -80,7 +83,7 @@ def register(request):
             messages.error(request, "login password and master password can't be same!!!")
             return redirect('register')
 
-        if len(master_password)<8:
+        if len(master_password) < 8:
             messages.error(request, "Master password must be strong and minimum 10 letter long!")
             return redirect('register')
 
@@ -95,10 +98,10 @@ def register(request):
                         user = User.objects.create_user(username=username,
                                                         email=email,
                                                         password=password)
-                        #call encryptr class and get key
+                        # call encryptr class and get key
                         en_key = MBCryptr.build_key_from_password(master_password)
-                        AccHelper.create_all_basic_acc_heads(user,en_key)
-                        AccHelper.add_dashboard_metas(user,en_key)
+                        AccHelper.create_all_basic_acc_heads(user, en_key)
+                        AccHelper.add_dashboard_metas(user, en_key)
                         return render(request, 'base/thanks.html')
                     except IntegrityError:
                         messages.error(request, "Internal error! Contact with support.")
@@ -110,6 +113,7 @@ def register(request):
     else:
         return render(request, 'base/sign_up.html')
 
+
 @login_required
 @unlock_required
 def dashboard(request):
@@ -119,31 +123,30 @@ def dashboard(request):
     donut_chart_data = AccHelper.get_expenses(request)
 
     current_date = datetime.today()
-    #todays income expense
+    # todays income expense
     # today = current_date.strftime('%Y-%m-%d')
-    today_inc_exp = AccHelper.get_income_expense_in_range(request,current_date,current_date)
+    today_inc_exp = AccHelper.get_income_expense_in_range(request, current_date, current_date)
 
-    #yesterday income expense
-    yester_day_date  = current_date + relativedelta(days=-1)
+    # yesterday income expense
+    yester_day_date = current_date + relativedelta(days=-1)
     # yester_day = yester_day_date.strftime('%Y-%m-%d')
-    yester_day_inc_exp = AccHelper.get_income_expense_in_range(request,yester_day_date,yester_day_date)
+    yester_day_inc_exp = AccHelper.get_income_expense_in_range(request, yester_day_date, yester_day_date)
 
-    #this week income expense
+    # this week income expense
     this_week_start  = current_date - timedelta(days=current_date.weekday()+2)
     this_week_end  = this_week_start + timedelta(days=6)
-    this_week_inc_exp = AccHelper.get_income_expense_in_range(request,this_week_start,this_week_end)
-
+    this_week_inc_exp = AccHelper.get_income_expense_in_range(request, this_week_start, this_week_end)
 
     # this week income expense
     last_week_end = this_week_start - timedelta(days=1)
     last_week_start = last_week_end - timedelta(days=6)
-    last_week_inc_exp = AccHelper.get_income_expense_in_range(request,last_week_start,last_week_end)
+    last_week_inc_exp = AccHelper.get_income_expense_in_range(request, last_week_start, last_week_end)
 
-    #this month income expense
+    # this month income expense
     _, num_days = monthrange(current_date.year, current_date.month)
     this_month_start = date(current_date.year, current_date.month, 1)
     this_month_end = date(current_date.year, current_date.month, num_days)
-    this_month_inc_exp = AccHelper.get_income_expense_in_range(request,this_month_start,this_month_end)
+    this_month_inc_exp = AccHelper.get_income_expense_in_range(request, this_month_start,this_month_end)
 
     # last month income expense
     _, num_days = monthrange(current_date.year, current_date.month-1)
@@ -152,16 +155,17 @@ def dashboard(request):
     last_month_inc_exp = AccHelper.get_income_expense_in_range(request, last_month_start, last_month_end)
 
     context = {
-        'meta_data':meta_data,
-        'donut_chart_data': json.dumps(donut_chart_data,cls=DjangoJSONEncoder),
-        'today' : today_inc_exp,
-        'yester_day' : yester_day_inc_exp,
-        'this_week' : this_week_inc_exp,
-        'last_week' : last_week_inc_exp,
-        'this_month' : this_month_inc_exp,
-        'last_month' : last_month_inc_exp,
+        'meta_data': meta_data,
+        'donut_chart_data': json.dumps(donut_chart_data, cls=DjangoJSONEncoder),
+        'today': today_inc_exp,
+        'yester_day': yester_day_inc_exp,
+        'this_week': this_week_inc_exp,
+        'last_week': last_week_inc_exp,
+        'this_month': this_month_inc_exp,
+        'last_month': last_month_inc_exp,
     }
-    return render(request, 'base/dashboard.html',context)
+    return render(request, 'base/dashboard.html', context)
+
 
 @login_required
 def logout(request):
@@ -169,13 +173,14 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
+
 @login_required
 def change_password(request):
     """
-        Handles password change
-        :param request:
-        :return:
-        """
+    Handles password change
+    :param request:
+    :return:
+    """
     if request.method == "POST":
         old_password = request.POST.get('old_password')
         password = request.POST.get('password')
@@ -196,7 +201,7 @@ def change_password(request):
         current_user.set_password(password)
         current_user.save()
         update_session_auth_hash(request, current_user)  # Important!
-        messages.info(request, 'Password change successfullly!')
+        messages.info(request, 'Password changed successfully!')
         return redirect('dashboard')
 
     else:
