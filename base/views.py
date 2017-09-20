@@ -90,7 +90,7 @@ def register(request):
                 messages.error(request, "login password and master password can't be same!!!")
                 return redirect('register')
 
-            if len(master_password) < 8:
+            if len(master_password) < 10:
                 messages.error(request, "Master password must be strong and minimum 10 letter long!")
                 return redirect('register')
 
