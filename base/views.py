@@ -37,7 +37,7 @@ def login(request):
             messages.error(request, 'Username/Password is not valid!')
             return redirect('/')
     else:
-        if REGISTER == True:  # monkey patch :P ; enable/disable registration link
+        if REGISTER == True or REGISTER == 'True':  # monkey patch :P ; enable/disable registration link
             register = True
         elif REGISTER == 'False':
             register = False
