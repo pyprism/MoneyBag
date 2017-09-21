@@ -10,7 +10,18 @@ This app helps to manage finance according to Chart Of Accounts. All data stored
 - OpenSSL Lib ```sudo apt install libssl-dev libffi-dev python3-dev```
 
 ### Installation
-- TODO
+- Download the [repository](https://github.com/pyprism/MoneyBag/releases/latest) and unzip into your server
+- Open and point your terminal to the directory you unzipped MoneyBag
+- Run the following commands:
+  ```
+  virtualenv -p /usr/bin/python3.6 .env
+  source .env/bin/activate
+  pip install -r requirements.txt
+  ./manage.py compress
+  cp config.json config.local.json
+  
+  ```
+  - TODO
 
 ### Screenshots
 <img src="screenshots/dashboard.png">
