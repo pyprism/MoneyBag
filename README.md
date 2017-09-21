@@ -3,16 +3,21 @@
 
 This app helps to manage finance according to Chart Of Accounts. All data stored in db encrypted. For encryption its use AES-256!
 
+### Requirements
+- Python 3.6
+- PostgreSQL
+- Web Server (eg: Apache, Nginx)
+- OpenSSL Lib ```sudo apt install libssl-dev libffi-dev python3-dev```
 
-### Dependency[For encryption use OpenSSL Lib]
-```sudo apt install libssl-dev libffi-dev python3-dev```
+### Installation
+- TODO
 
-### screenshots
+### Screenshots
 <img src="screenshots/dashboard.png">
 
 <a href="https://github.com/pyprism/MoneyBag/tree/master/screenshots">More Screenshots</a>
 
-### Developed By
+### Credits
 - [Habibur Rahman Shadhin](https://github.com/hrshadhin)
 - [Ashutosh Das](https://github.com/pyprism)
 
