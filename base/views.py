@@ -53,7 +53,7 @@ def unlock(request):
         """
     if request.method == "POST":
         master_password = request.POST.get('master_password', False)
-        if master_password and len(master_password) >= 8:
+        if master_password and len(master_password) >= 10:
             en_key = AccHelper.is_mpass_valid(request.user, master_password)
             if en_key:
                 request.session['en_key'] = en_key.decode('utf-8')
