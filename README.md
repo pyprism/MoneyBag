@@ -14,14 +14,20 @@ This app helps to manage finance according to Chart Of Accounts. All data stored
 - Open and point your terminal to the directory you unzipped MoneyBag
 - Run the following commands:
   ```
-  virtualenv -p /usr/bin/python3.6 .env
-  source .env/bin/activate
   pip install -r requirements.txt
-  ./manage.py compress
   cp config.json config.local.json
   
   ```
-  - TODO
+- Now put appropriate value in config.local.json using text editor
+- then finally run
+```
+./manage.py migrate
+./manage.py compress
+uwsgi --http :8000 --module proj.wsgi
+```
+Application is now running on port 8000
+ ### TODO
+ - [ ] More unit test
 
 ### Screenshots
 <img src="screenshots/dashboard.png">
