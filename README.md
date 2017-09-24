@@ -3,6 +3,11 @@
 
 This app helps to manage finance according to Chart Of Accounts. All data stored in db encrypted. For encryption its use AES-256!
 
+### Screenshots
+<img src="screenshots/dashboard.png">
+
+<a href="https://github.com/pyprism/MoneyBag/tree/master/screenshots">More Screenshots</a>
+
 ### Requirements
 - Python 3.6
 - PostgreSQL
@@ -28,11 +33,6 @@ uwsgi --http :8000 --module proj.wsgi
 Application is now running on port 8000
  ### TODO
  - [ ] More unit test
-
-### Screenshots
-<img src="screenshots/dashboard.png">
-
-<a href="https://github.com/pyprism/MoneyBag/tree/master/screenshots">More Screenshots</a>
 
 ### Credits
 - [Habibur Rahman Shadhin](https://github.com/hrshadhin)
