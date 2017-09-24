@@ -11,6 +11,7 @@ This app helps to manage finance according to Chart Of Accounts. All data stored
 ### Requirements
 - Python 3.6
 - PostgreSQL
+- Redis
 - Web Server (eg: Apache, Nginx)
 - OpenSSL Library and others ```sudo apt install libssl-dev libffi-dev python3-dev```
 
