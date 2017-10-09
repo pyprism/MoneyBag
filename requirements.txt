@@ -1,6 +1,6 @@
 cffi==1.11.1
 contextlib2==0.5.5
-Django==1.11.5
+Django==1.11.6
 django-appconf==1.0.2
 django-cacheops==4.0
 django-compressor==2.2
