@@ -147,7 +147,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Dhaka'
 
-USE_I18N = True
+USE_I18N = False
 
 USE_L10N = True
 
@@ -279,3 +279,6 @@ CACHEOPS = {
     'auth.user': {'ops': 'all', 'timeout': 60*60*24*30},
     '*.*': {'ops': 'all', 'timeout': 60*60*24*2},  # enable cache for all model for 2 days
 }
+
+# Enable/Disable online account registration
+REGISTER = os.environ.get('REGISTER', True)

@@ -47,11 +47,13 @@
                                 <button class="btn btn-block bg-light-blue waves-effect" type="submit">SIGN IN</button>
                             </div>
                         </div>
-                        <div class="row m-t-15 m-b--20">
-                            <div class="col-xs-6">
-                                <a href="{% url 'register' %}">Register Now!</a>
+                        {% if register %}
+                            <div class="row m-t-15 m-b--20">
+                                <div class="col-xs-6">
+                                    <a href="{% url 'register' %}">Register Now!</a>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>
