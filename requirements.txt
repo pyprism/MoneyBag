@@ -25,4 +25,4 @@ rjsmin==1.0.12
 six==1.11.0
 sqlparse==0.2.4
 urllib3==1.22
-uWSGI==2.0.17
+uWSGI==2.0.17.1
