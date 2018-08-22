@@ -3,7 +3,7 @@ certifi==2018.1.18
 cffi==1.11.5
 chardet==3.0.4
 contextlib2==0.5.5
-Django==2.0
+Django==2.1
 django-appconf==1.0.2
 django-cacheops==4.0.7
 django-compressor==2.2
