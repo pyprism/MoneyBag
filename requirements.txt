@@ -5,7 +5,7 @@ chardet==3.0.4
 contextlib2==0.5.5
 Django==2.1.1
 django-appconf==1.0.2
-django-cacheops==4.0.7
+django-cacheops==4.1
 django-compressor==2.2
 django-debug-toolbar==1.9.1
 fastpbkdf2==0.2
