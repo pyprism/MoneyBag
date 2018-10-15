@@ -13,7 +13,9 @@ This app helps to manage finance according to Chart Of Accounts. All data stored
 - PostgreSQL
 - Redis
 - Web Server (eg: Apache, Nginx)
-- OpenSSL Library and others ```sudo apt install libssl-dev libffi-dev python3-dev```
+- OpenSSL Library and others
+
+```sudo apt install libssl-dev libffi-dev python3-dev```
 
 ### Installation
 - Download the [repository](https://github.com/pyprism/MoneyBag/releases/latest) and unzip into your server
