@@ -1,5 +1,5 @@
 certifi==2018.8.24
-autopep8==1.4
+autopep8==1.4.2
 cffi==1.11.5
 chardet==3.0.4
 contextlib2==0.5.5
