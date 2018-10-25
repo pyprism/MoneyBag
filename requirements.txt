@@ -16,7 +16,7 @@ psycopg2==2.7.5
 pycodestyle==2.4.0
 pycparser==2.18
 pycrypto==2.6.1
-python-dateutil==2.7.3
+python-dateutil==2.7.4
 pytz==2018.5
 raven==6.9.0
 rcssmin==1.0.6
