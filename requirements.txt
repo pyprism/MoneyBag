@@ -10,7 +10,7 @@ django-compressor==2.2
 django-debug-toolbar==1.10.1
 fastpbkdf2==0.2
 freezegun==0.3.11
-funcy==1.10.3
+funcy==1.11
 num2words==0.5.7
 psycopg2==2.7.5
 pycodestyle==2.4.0
