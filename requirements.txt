@@ -1,5 +1,5 @@
 certifi==2018.10.15
-autopep8==1.4
+autopep8==1.4.2
 cffi==1.11.5
 chardet==3.0.4
 contextlib2==0.5.5
@@ -16,13 +16,13 @@ psycopg2==2.7.5
 pycodestyle==2.4.0
 pycparser==2.18
 pycrypto==2.6.1
-python-dateutil==2.7.3
-pytz==2018.5
+python-dateutil==2.7.5
+pytz==2018.7
 raven==6.9.0
 rcssmin==1.0.6
 redis==2.10.6
 rjsmin==1.0.12
 six==1.11.0
 sqlparse==0.2.4
-urllib3==1.23
+urllib3==1.24
 uWSGI==2.0.17.1
