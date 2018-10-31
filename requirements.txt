@@ -14,7 +14,7 @@ funcy==1.10.3
 num2words==0.5.7
 psycopg2==2.7.5
 pycodestyle==2.4.0
-pycparser==2.18
+pycparser==2.19
 pycrypto==2.6.1
 python-dateutil==2.7.5
 pytz==2018.7
