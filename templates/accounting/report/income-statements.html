@@ -1,6 +1,6 @@
 {% extends "base/backend_master.html" %}
 
-{% block title %} Income Statement {% endblock %}
+{% block title %} Income Statement - {{ month_year | date:"F,Y" }} {% endblock %}
 
 {% block childPage %}
     <section class="content print-body">
