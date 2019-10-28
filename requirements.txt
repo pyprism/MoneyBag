@@ -11,7 +11,7 @@ django-debug-toolbar==1.11
 fastpbkdf2==0.2
 freezegun==0.3.11
 funcy==1.11
-num2words==0.5.9
+num2words==0.5.10
 psycopg2==2.8.4
 pycodestyle==2.5.0
 pycparser==2.19
