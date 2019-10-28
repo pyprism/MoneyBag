@@ -21,18 +21,18 @@ This app helps to manage finance according to Chart Of Accounts. All data stored
 - Download the [repository](https://github.com/pyprism/MoneyBag/releases/latest) and unzip into your server
 - Open and point your terminal to the directory you unzipped MoneyBag
 - Run the following commands:
-  ```
-  pip install -r requirements.txt
-  cp config.json config.local.json
-  
-  ```
+    ```
+    pip install -r requirements.txt
+    cp config.json config.local.json
+
+    ```
 - Now put appropriate value in config.local.json using text editor
 - then finally run
-```
-./manage.py migrate
-./manage.py compress
-uwsgi --http :8000 --module proj.wsgi
-```
+    ```
+    ./manage.py migrate
+    ./manage.py compress
+    uwsgi --http :8000 --module proj.wsgi
+    ```
 Application is now running on port 8000
  ### TODO
  - [ ] More unit test
