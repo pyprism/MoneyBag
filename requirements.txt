@@ -7,7 +7,7 @@ Django==2.1.7
 django-appconf==1.0.3
 django-cacheops==4.1
 django-compressor==2.2
-django-debug-toolbar==1.11
+django-debug-toolbar==2.2
 fastpbkdf2==0.2
 freezegun==0.3.11
 funcy==1.11
