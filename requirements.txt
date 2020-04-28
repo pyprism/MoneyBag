@@ -18,7 +18,7 @@ pycparser==2.19
 pycrypto==2.6.1
 python-dateutil==2.8.0
 raven==6.10.0
-pytz==2018.9
+pytz==2020.1
 rcssmin==1.0.6
 redis==3.2.1
 rjsmin==1.0.12
